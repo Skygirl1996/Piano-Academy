@@ -1,30 +1,90 @@
-let score = 0;
+// دریافت وضعیت ذخیره شده
+
+let status =
+localStorage.getItem("musicStatus")
+|| "هنوز اجرا ثبت نشده";
 
 
-function addScore(){
-
-score += 50;
-
-
-document.getElementById(
-"score"
-).innerHTML = score;
+let score =
+localStorage.getItem("score")
+|| 0;
 
 
-let money = score * 100;
+
+function updateChildPage(){
 
 
-document.getElementById(
-"money"
-).innerHTML = money;
+let statusBox =
+document.getElementById("status");
 
 
-let percent = score / 10;
+if(statusBox){
+
+statusBox.innerHTML=status;
+
+}
 
 
-document.getElementById(
-"progress"
-).style.width =
-percent+"%";
+let scoreBox =
+document.getElementById("score");
+
+
+if(scoreBox){
+
+scoreBox.innerHTML=score+" XP";
+
+}
+
+
+}
+
+
+
+function approveScore(points){
+
+
+score =
+Number(score)+Number(points);
+
+
+localStorage.setItem(
+"score",
+score
+);
+
+
+localStorage.setItem(
+"musicStatus",
+"🎉 تبریک می‌گویم! موسیقی شما تایید شد."
+);
+
+
+updateChildPage();
+
+
+}
+
+
+
+function changeStatus(newStatus){
+
+
+localStorage.setItem(
+"musicStatus",
+newStatus
+);
+
+
+updateChildPage();
+
+
+}
+
+
+
+
+window.onload=function(){
+
+updateChildPage();
 
 }
