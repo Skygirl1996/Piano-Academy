@@ -8,10 +8,17 @@
 Little Maestro Academy
 </title>
 
+
+<link rel="stylesheet" href="style.css">
+
+
 </head>
 
 
 <body>
+
+
+<div class="container">
 
 
 <h1>
@@ -19,14 +26,65 @@ Little Maestro Academy
 </h1>
 
 
+
+<div class="card">
+
+
 <h2>
-Welcome Pianist
+🎼 نوازنده: آرین
 </h2>
 
 
-<p>
-Your piano journey starts here!
-</p>
+<div class="stat">
+⭐ امتیاز:
+<span id="score">
+0
+</span>
+</div>
+
+
+
+<div class="stat">
+
+💰 درآمد:
+
+<span id="money">
+0
+</span>
+
+تومان
+
+</div>
+
+
+<button onclick="addScore()">
+
+اجرای موفق قطعه
+
+</button>
+
+
+<br><br>
+
+
+<div class="progress">
+
+<div id="progress"
+class="progress-bar">
+
+</div>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<script src="app.js"></script>
 
 
 </body>
