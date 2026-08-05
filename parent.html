@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html>
+
+
+<head>
+
+<title>
+Parent Panel
+</title>
+
+
+<link rel="stylesheet" href="style.css">
+
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>
+🔐 پنل مادر
+</h1>
+
+
+<div class="card">
+
+
+<h3>
+رمز ورود
+</h3>
+
+
+<input id="password"
+type="password">
+
+
+<button onclick="login()">
+ورود
+</button>
+
+
+</div>
+
+
+
+<div id="panel"
+class="card"
+style="display:none;">
+
+
+
+<h2>
+🎧 بررسی اجرای آرین
+</h2>
+
+
+
+<button onclick="
+changeStatus('🎧 در حال شنیدن اجرای شما...')
+">
+
+در حال شنیدن
+
+</button>
+
+
+<br><br>
+
+
+
+<button onclick="
+changeStatus('🔍 در حال بررسی ریتم و دقت اجرا...')
+">
+
+در حال بررسی
+
+</button>
+
+
+
+<br><br>
+
+
+<button onclick="
+approveScore(50)
+">
+
+🎉 تایید موسیقی +50 XP
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+
+<script src="app.js"></script>
+
+
+
+<script>
+
+
+function login(){
+
+
+let pass =
+document.getElementById(
+"password"
+).value;
+
+
+
+if(pass==="1234"){
+
+
+document.getElementById(
+"panel"
+).style.display="block";
+
+
+}
+
+else{
+
+
+alert("رمز اشتباه است");
+
+
+}
+
+
+}
+
+
+</script>
+
+
+</body>
+
+
+</html>
