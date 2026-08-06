@@ -9,7 +9,7 @@
 
 <title>Online Piano Academy | Parent Panel</title>
 
-<link rel="stylesheet" href="./style.css?v=20">
+<link rel="stylesheet" href="./style.css?v=30">
 
 </head>
 
@@ -22,34 +22,59 @@
 
 <header class="academy-header">
 
-<div class="piano-icon">🎹</div>
+<div class="piano-icon">
+🎹
+</div>
 
-<h1>Online Piano Academy</h1>
 
-<p>Parent Performance Evaluation</p>
+<h1>
+Online Piano Academy
+</h1>
+
+
+<p>
+Parent Performance Evaluation
+</p>
+
 
 </header>
 
 
 
-<section class="card login-card" id="login-card">
 
 
-<h2>🔐 Parent Login</h2>
+<section 
+class="card login-card"
+id="login-card"
+>
 
 
-<input 
+<h2>
+🔐 Parent Login
+</h2>
+
+
+<input
+
 id="password"
+
 type="password"
+
 placeholder="Password"
+
 >
 
 
-<button 
+<button
+
 id="login-button"
+
 type="button"
+
 >
+
 Unlock Panel
+
 </button>
 
 
@@ -59,186 +84,395 @@ Unlock Panel
 
 
 
-<section 
+
+
+<section
+
 class="card"
+
 id="parent-panel"
+
 style="display:none;"
+
 >
 
 
-<h2>🎼 Performance Evaluation</h2>
 
-<h3>🎧 Performance Status</h3>
+<h2>
+🎼 Performance Evaluation
+</h2>
 
 
-<button onclick="
-window.changeStatus(
-'🎧 We are listening to your performance...'
-)
-">
 
-Listening
+
+
+<h3>
+🎧 Performance Status
+</h3>
+
+
+
+<button
+
+id="listening-button"
+
+type="button"
+
+>
+
+🎧 Listening
 
 </button>
 
 
-<button onclick="
-window.changeStatus(
-'🔍 Your rhythm and accuracy are being reviewed...'
-)
-">
 
-Reviewing
+
+<button
+
+id="reviewing-button"
+
+type="button"
+
+>
+
+🔍 Reviewing
 
 </button>
+
+
+
+
+
+<hr>
+
+
+
+
 
 <label>
 Song Name
 </label>
 
 
-<input 
+<input
+
 id="song-name"
+
 placeholder="Song name"
+
 >
 
 
 
-<h3>⭐ Performance Quality</h3>
+
+
+
+<h3>
+⭐ Performance Quality
+</h3>
+
 
 <select id="performance">
-<option value="0">None</option>
-<option value="50">Excellent Performance (+50 XP)</option>
-<option value="35">Good Performance (+35 XP)</option>
-<option value="20">Practice Attempt (+20 XP)</option>
-</select>
-
-
-
-<h3>🔁 Song Repetition</h3>
-
-<select id="repetition">
-<option value="0">None</option>
-<option value="50">Low Repetition (+50 XP)</option>
-<option value="25">Medium Repetition (+25 XP)</option>
-<option value="10">High Repetition (+10 XP)</option>
-</select>
-
-
-
-<h3>🎯 Difficulty</h3>
-
-<select id="difficulty">
-<option value="1">None (×1)</option>
-<option value="1">Easy ×1</option>
-<option value="1.5">Medium ×1.5</option>
-<option value="2">Hard ×2</option>
-<option value="3">Master ×3</option>
-</select>
-
-
-
-<h3>🏆 Bonuses</h3>
-
-<label>
-<input type="checkbox" class="bonus" value="100">
-New Song Learned (+100 XP)
-</label>
-
-<br>
-
-<label>
-<input type="checkbox" class="bonus" value="150">
-Difficult Challenge (+150 XP)
-</label>
-
-<br>
-
-<label>
-<input type="checkbox" class="bonus" value="50">
-Personal Record (+50 XP)
-</label>
-
-
-
-
-<h3>🎹 Technical Evaluation</h3>
-
-
-<select id="rhythm">
 
 <option value="0">
 None
 </option>
+
+
+<option value="50">
+Excellent Performance (+50 XP)
+</option>
+
+
+<option value="35">
+Good Performance (+35 XP)
+</option>
+
+
+<option value="20">
+Practice Attempt (+20 XP)
+</option>
+
+
+</select>
+
+
+
+
+
+
+<h3>
+🔁 Song Repetition
+</h3>
+
+
+<select id="repetition">
+
+
+<option value="0">
+None
+</option>
+
+
+<option value="50">
+Low Repetition (+50 XP)
+</option>
+
+
+<option value="25">
+Medium Repetition (+25 XP)
+</option>
+
+
+<option value="10">
+High Repetition (+10 XP)
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+<h3>
+🎯 Difficulty
+</h3>
+
+
+
+<select id="difficulty">
+
+
+<option value="1">
+None ×1
+</option>
+
+
+<option value="1">
+Easy ×1
+</option>
+
+
+<option value="1.5">
+Medium ×1.5
+</option>
+
+
+<option value="2">
+Hard ×2
+</option>
+
+
+<option value="3">
+Master ×3
+</option>
+
+
+</select>
+
+
+
+
+
+
+
+
+<h3>
+🏆 Bonuses
+</h3>
+
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+class="bonus"
+
+value="100"
+
+>
+
+New Song Learned (+100 XP)
+
+</label>
+
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+class="bonus"
+
+value="150"
+
+>
+
+Difficult Challenge (+150 XP)
+
+</label>
+
+
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+class="bonus"
+
+value="50"
+
+>
+
+Personal Record (+50 XP)
+
+</label>
+
+
+
+
+
+
+
+
+<h3>
+🎹 Technical Evaluation
+</h3>
+
+
+
+<select id="rhythm">
+
+
+<option value="0">
+None
+</option>
+
 
 <option value="10">
 Perfect Rhythm (+10 XP)
 </option>
 
+
 <option value="-5">
 Rhythm Problem (-5 XP)
 </option>
 
+
 </select>
+
+
 
 
 
 <select id="notes">
 
+
 <option value="0">
 None
 </option>
+
 
 <option value="10">
 Accurate Notes (+10 XP)
 </option>
 
+
 <option value="-5">
 Wrong Notes (-5 XP)
 </option>
 
+
 </select>
+
+
+
 
 
 
 <select id="expression">
 
+
 <option value="0">
 None
 </option>
+
 
 <option value="10">
 Excellent Expression (+10 XP)
 </option>
 
+
 <option value="-5">
 Needs Expression (-5 XP)
 </option>
 
+
 </select>
 
+
+
+
+
+
+
+
+
 <h2>
+
 Final XP:
+
 <span id="final-xp">
+
 0
+
 </span>
+
 XP
+
 </h2>
+
+
 
 
 
 <h2>
+
 Reward:
+
 <span id="reward">
+
 0
+
 </span>
- تومان
+
+تومان
+
 </h2>
 
 
 
 
-<button id="calculate-button">
+
+
+<button
+
+id="calculate-button"
+
+type="button"
+
+>
 
 Calculate XP
 
@@ -246,7 +480,15 @@ Calculate XP
 
 
 
-<button id="save-button">
+
+
+<button
+
+id="save-button"
+
+type="button"
+
+>
 
 Save Performance
 
@@ -254,10 +496,15 @@ Save Performance
 
 
 
+
+
 <p id="message"></p>
 
 
+
 </section>
+
+
 
 
 
@@ -265,107 +512,153 @@ Save Performance
 
 
 
-<script>
+
+
+
+
+
+<script type="module">
+
+
+import "./app.js";
+
+
 
 document.addEventListener(
+
 "DOMContentLoaded",
+
 function(){
 
+
+
 const loginButton =
-document.getElementById("login-button");
+document.getElementById(
+"login-button"
+);
+
 
 
 const passwordInput =
-document.getElementById("password");
+document.getElementById(
+"password"
+);
+
 
 
 const loginCard =
-document.getElementById("login-card");
+document.getElementById(
+"login-card"
+);
+
 
 
 const parentPanel =
-document.getElementById("parent-panel");
+document.getElementById(
+"parent-panel"
+);
 
 
 
-loginButton.onclick = function(){
+
+
+loginButton.addEventListener(
+
+"click",
+
+function(){
+
 
 
 if(passwordInput.value === "1234"){
 
 
-loginCard.style.display="none";
+loginCard.style.display =
+"none";
 
 
-parentPanel.style.display="block";
-
-
-console.log("Login successful");
+parentPanel.style.display =
+"block";
 
 
 }
 
 else{
 
-alert("Wrong password");
+
+alert(
+"Wrong password"
+);
+
 
 }
 
 
-};
+}
 
-
-});
-
-
-</script>
-<script 
-type="module"
-src="./app.js?v=21">
-</script>
+);
 
 
 
-<script>
+
 
 
 document
-.getElementById("login-button")
+.getElementById(
+"listening-button"
+)
 .addEventListener(
+
 "click",
+
 function(){
 
 
-let password =
-document.getElementById("password").value;
+window.changeStatus(
 
+"🎧 We are listening to your performance..."
 
-
-if(password === "1234"){
-
-
-document
-.getElementById("login-card")
-.style.display="none";
-
-
-document
-.getElementById("parent-panel")
-.style.display="block";
+);
 
 
 }
 
-else{
+);
 
 
-alert("Wrong password");
+
+
+
+
+
+document
+.getElementById(
+"reviewing-button"
+)
+.addEventListener(
+
+"click",
+
+function(){
+
+
+window.changeStatus(
+
+"🔍 Your rhythm and accuracy are being reviewed..."
+
+);
 
 
 }
 
+);
 
-});
+
+
+
+}
+
+);
 
 
 </script>
