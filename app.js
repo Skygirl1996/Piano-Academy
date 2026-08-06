@@ -16,206 +16,293 @@ const studentRef = doc(
 );
 
 
-/* دریافت زنده اطلاعات از Firebase */
+
+// ==============================
+// Firebase Listener
+// ==============================
+
+
 onSnapshot(
     studentRef,
 
-    function (snapshot) {
-        if (!snapshot.exists()) {
-            console.error("Student document does not exist.");
+    function(snapshot){
 
-            const statusBox =
-                document.getElementById("status");
+        if(!snapshot.exists()){
 
-            if (statusBox) {
-                statusBox.textContent =
-                    "Student profile was not found.";
-            }
+            console.error(
+                "Student document does not exist."
+            );
 
             return;
         }
 
-        const student = snapshot.data();
+
+        const student =
+        snapshot.data();
+
+
 
         const statusBox =
-            document.getElementById("status");
+        document.getElementById("status");
+
 
         const scoreBox =
-            document.getElementById("score");
+        document.getElementById("score");
+
 
         const levelBox =
-            document.getElementById("level");
+        document.getElementById("level");
+
 
         const progressBar =
-            document.getElementById("progress");
+        document.getElementById("progress");
 
 
-        if (statusBox) {
+
+        if(statusBox){
+
             statusBox.textContent =
-                student.musicStatus ||
-                "🎹 Waiting for your performance...";
+            student.musicStatus ||
+            "🎹 Waiting for your performance...";
+
         }
 
 
-        const xp = Number(student.xp) || 0;
-        const level = Number(student.level) || 1;
+
+        const xp =
+        Number(student.xp) || 0;
 
 
-        if (scoreBox) {
-            scoreBox.textContent = xp + " XP";
+        const level =
+        Number(student.level) || 1;
+
+
+
+        if(scoreBox){
+
+            scoreBox.textContent =
+            xp + " XP";
+
         }
 
 
-        if (levelBox) {
+
+        if(levelBox){
+
             levelBox.textContent =
-                "⭐ Level " + level;
+            "⭐ Level " + level;
+
         }
 
 
-        if (progressBar) {
-            const percentage =
-                Math.min((xp / 500) * 100, 100);
+
+        if(progressBar){
 
             progressBar.style.width =
-                percentage + "%";
+            Math.min((xp / 500) * 100,100)
+            + "%";
+
         }
+
 
 
         console.log(
             "Firebase data received:",
             student
         );
+
+
     },
 
-    function (error) {
+
+    function(error){
+
         console.error(
             "Firebase listener error:",
             error
         );
 
+
         const statusBox =
-            document.getElementById("status");
+        document.getElementById("status");
 
-        if (statusBox) {
+
+        if(statusBox){
+
             statusBox.textContent =
-                "Firebase connection error: " +
-                error.message;
+            "Firebase error: "
+            + error.message;
+
         }
+
     }
+
 );
 
 
-/* تغییر وضعیت اجرا از پنل مادر */
-window.changeStatus =
-async function (newStatus) {
-    try {
-        console.log(
-            "Updating status:",
-            newStatus
-        );
+
+
+
+// ==============================
+// Update Performance Status
+// ==============================
+
+
+window.changeStatus = 
+async function(newStatus){
+
+
+    try{
+
 
         await setDoc(
+
             studentRef,
 
             {
-                musicStatus: newStatus,
-                updatedAt: serverTimestamp()
+
+                musicStatus:newStatus,
+
+                updatedAt:
+                serverTimestamp()
+
             },
 
             {
-                merge: true
+
+                merge:true
+
             }
+
         );
 
-        console.log(
-            "Status updated successfully."
-        );
 
         alert(
-            "Performance status updated successfully."
+            "Performance status updated."
         );
-    } catch (error) {
+
+
+    }
+
+    catch(error){
+
+
         console.error(
-            "Status update failed:",
             error
         );
 
+
         alert(
-            "Firebase error: " +
             error.message
         );
+
     }
+
 };
 
 
-/* تأیید اجرا و افزودن ۵۰ امتیاز */
+
+
+
+
+// ==============================
+// Approve Score
+// ==============================
+
+
 window.approveScore =
-async function (points) {
-    try {
-        const numericPoints =
-            Number(points);
+async function(points){
+
+
+    try{
+
 
         await setDoc(
+
             studentRef,
 
             {
+
                 musicStatus:
-                    "🎉 Congratulations! Your performance has been approved.",
+                "🎉 Congratulations! Your performance has been approved.",
 
-                xp: increment(numericPoints),
 
-                updatedAt: serverTimestamp()
+                xp:
+                increment(
+                    Number(points)
+                ),
+
+
+                updatedAt:
+                serverTimestamp()
+
             },
 
             {
-                merge: true
+
+                merge:true
+
             }
+
         );
 
-        console.log(
-            "Performance approved."
-        );
 
         alert(
-            "Performance approved! +" +
-            numericPoints +
-            " XP"
+            "Approved +" + points + " XP"
         );
-    } catch (error) {
+
+
+    }
+
+
+    catch(error){
+
+
         console.error(
-            "Approval failed:",
             error
         );
 
+
         alert(
-            "Firebase error: " +
             error.message
         );
+
+
     }
+
+
 };
 
 
-console.log(
-    "app.js loaded successfully."
-);
+
+
+
 
 // ==============================
-// Performance Evaluation System
+// Performance Evaluation
 // ==============================
 
 
-function getRadioValue(name){
+function getSelectValue(id){
 
-    const selected =
-    document.querySelector(
-        `input[name="${name}"]:checked`
-    );
 
-    return selected
-    ? Number(selected.value)
-    : 0;
+    const element =
+    document.getElementById(id);
+
+
+    if(element){
+
+        return Number(
+            element.value
+        );
+
+    }
+
+
+    return 0;
 
 }
+
 
 
 
@@ -223,64 +310,101 @@ function getRadioValue(name){
 function calculateXP(){
 
 
+
     let base =
-    getRadioValue("performance");
+    getSelectValue(
+        "performance"
+    );
+
 
 
     let repetition =
-    getRadioValue("repetition");
+    getSelectValue(
+        "repetition"
+    );
+
 
 
     let difficulty =
-    getRadioValue("difficulty");
+    getSelectValue(
+        "difficulty"
+    );
 
 
     if(difficulty === 0){
+
         difficulty = 1;
+
     }
+
+
+
+    let rhythm =
+    getSelectValue(
+        "rhythm"
+    );
+
+
+
+    let notes =
+    getSelectValue(
+        "notes"
+    );
+
+
+
+    let expression =
+    getSelectValue(
+        "expression"
+    );
 
 
 
     let bonuses = 0;
 
 
+
     document
-    .querySelectorAll(".bonus:checked")
+    .querySelectorAll(
+        ".bonus:checked"
+    )
     .forEach(
-        item => {
+
+        function(item){
 
             bonuses +=
             Number(item.value);
 
         }
+
     );
 
 
 
-    let rhythm =
-    getRadioValue("rhythm");
-
-
-    let notes =
-    getRadioValue("notes");
-
-
-    let expression =
-    getRadioValue("expression");
-
 
 
     let finalXP =
+
     (
+
         base +
+
         repetition +
+
         bonuses +
+
         rhythm +
+
         notes +
+
         expression
+
     )
+
     *
+
     difficulty;
+
 
 
 
@@ -289,17 +413,36 @@ function calculateXP(){
 
 
 
+
+    const xpBox =
     document.getElementById(
         "final-xp"
-    ).innerText =
-    finalXP;
+    );
 
 
-
+    const moneyBox =
     document.getElementById(
         "reward"
-    ).innerText =
-    finalXP * 100;
+    );
+
+
+
+    if(xpBox){
+
+        xpBox.innerText =
+        finalXP;
+
+    }
+
+
+
+    if(moneyBox){
+
+        moneyBox.innerText =
+        finalXP * 100;
+
+    }
+
 
 
 
@@ -310,111 +453,34 @@ function calculateXP(){
 
 
 
+
+
 const calculateButton =
 document.getElementById(
     "calculate-button"
 );
 
 
+
 if(calculateButton){
 
+
     calculateButton.addEventListener(
+
         "click",
+
         calculateXP
+
     );
 
+
 }
 
 
 
 
-function calculateXP(){
 
 
-let base =
-getRadioValue("performance");
-
-
-let repetition =
-getRadioValue("repetition");
-
-
-let difficulty =
-getRadioValue("difficulty");
-
-
-if(difficulty === 0){
-    difficulty = 1;
-}
-
-
-
-let bonuses = 0;
-
-
-document
-.querySelectorAll(".bonus:checked")
-.forEach(
-(item)=>{
-    bonuses += Number(item.value);
-}
+console.log(
+    "app.js loaded successfully."
 );
-
-
-
-let rhythm =
-getRadioValue("rhythm");
-
-
-let notes =
-getRadioValue("notes");
-
-
-let expression =
-getRadioValue("expression");
-
-
-
-let total =
-(
-base +
-repetition +
-bonuses +
-rhythm +
-notes +
-expression
-)
-*
-difficulty;
-
-
-
-document.getElementById(
-"final-xp"
-).innerText =
-Math.round(total);
-
-
-
-document.getElementById(
-"reward"
-).innerText =
-Math.round(total * 100);
-
-
-
-return Math.round(total);
-
-
-}
-
-
-
-
-document
-.getElementById("calculate-button")
-?.addEventListener(
-"click",
-calculateXP
-);
-
