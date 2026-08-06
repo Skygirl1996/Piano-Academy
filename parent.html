@@ -59,7 +59,7 @@ Unlock Panel
 <section 
 class="card"
 id="parent-panel"
-hidden
+style="display:none;"
 >
 
 
@@ -76,7 +76,6 @@ Song Name
 id="song-name"
 placeholder="Song name"
 >
-
 
 
 
@@ -278,7 +277,53 @@ Save Performance
 
 <script 
 type="module"
-src="./app.js?v=20">
+src="./app.js?v=21">
+</script>
+
+
+
+<script>
+
+
+document
+.getElementById("login-button")
+.addEventListener(
+"click",
+function(){
+
+
+let password =
+document.getElementById("password").value;
+
+
+
+if(password === "1234"){
+
+
+document
+.getElementById("login-card")
+.style.display="none";
+
+
+document
+.getElementById("parent-panel")
+.style.display="block";
+
+
+}
+
+else{
+
+
+alert("Wrong password");
+
+
+}
+
+
+});
+
+
 </script>
 
 
