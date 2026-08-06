@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -14,17 +13,15 @@
 
     <link
         rel="stylesheet"
-        href="./style.css?v=6"
+        href="./style.css?v=11"
     >
 </head>
-
 
 <body>
 
     <div class="music-notes">
         ♪ ♫ ♬ ♪ ♫
     </div>
-
 
     <main class="container">
 
@@ -146,44 +143,152 @@
     </main>
 
 
- <script
-    type="module"
-    src="./app.js?v=10"
-></script>
+    <script
+        type="module"
+        src="./app.js?v=11"
+    ></script>
 
 
-<script>
-function login() {
-    const password =
-        document.getElementById("password").value;
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
 
-    if (password === "1234") {
-        document.getElementById("panel")
-            .style.display = "block";
-    } else {
-        alert("Wrong password");
-    }
-}
+                const loginButton =
+                    document.getElementById("login-button");
+
+                const passwordInput =
+                    document.getElementById("password");
+
+                const loginCard =
+                    document.getElementById("login-card");
+
+                const parentPanel =
+                    document.getElementById("parent-panel");
+
+                const listeningButton =
+                    document.getElementById("listening-button");
+
+                const reviewingButton =
+                    document.getElementById("reviewing-button");
+
+                const approveButton =
+                    document.getElementById("approve-button");
+
+                const adminMessage =
+                    document.getElementById("admin-message");
 
 
-async function startListening() {
-    await window.changeStatus(
-        "🎧 We are listening to your performance..."
-    );
-}
+                function showMessage(message, type) {
+                    adminMessage.textContent = message;
+                    adminMessage.className =
+                        "admin-message " + type;
+                }
 
 
-async function reviewing() {
-    await window.changeStatus(
-        "🔍 Your rhythm and accuracy are being reviewed..."
-    );
-}
+                function login() {
+                    const password =
+                        passwordInput.value;
+
+                    if (password === "1234") {
+                        parentPanel.hidden = false;
+                        loginCard.hidden = true;
+
+                        showMessage(
+                            "Parent panel unlocked.",
+                            "success"
+                        );
+                    } else {
+                        alert("Wrong password");
+
+                        passwordInput.value = "";
+                        passwordInput.focus();
+                    }
+                }
 
 
-async function approve() {
-    await window.approveScore(50);
-}
-</script>
+                loginButton.addEventListener(
+                    "click",
+                    login
+                );
+
+
+                passwordInput.addEventListener(
+                    "keydown",
+                    function (event) {
+                        if (event.key === "Enter") {
+                            login();
+                        }
+                    }
+                );
+
+
+                listeningButton.addEventListener(
+                    "click",
+                    async function () {
+                        if (
+                            typeof window.changeStatus
+                            !== "function"
+                        ) {
+                            showMessage(
+                                "app.js is not loaded correctly.",
+                                "error"
+                            );
+
+                            return;
+                        }
+
+                        await window.changeStatus(
+                            "🎧 We are listening to your performance..."
+                        );
+                    }
+                );
+
+
+                reviewingButton.addEventListener(
+                    "click",
+                    async function () {
+                        if (
+                            typeof window.changeStatus
+                            !== "function"
+                        ) {
+                            showMessage(
+                                "app.js is not loaded correctly.",
+                                "error"
+                            );
+
+                            return;
+                        }
+
+                        await window.changeStatus(
+                            "🔍 Your rhythm and accuracy are being reviewed..."
+                        );
+                    }
+                );
+
+
+                approveButton.addEventListener(
+                    "click",
+                    async function () {
+                        if (
+                            typeof window.approveScore
+                            !== "function"
+                        ) {
+                            showMessage(
+                                "app.js is not loaded correctly.",
+                                "error"
+                            );
+
+                            return;
+                        }
+
+                        await window.approveScore(50);
+                    }
+                );
+
+            }
+        );
+    </script>
 
 </body>
 </html>
