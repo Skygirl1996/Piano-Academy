@@ -1,169 +1,155 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
 
-<title>
-Parent Panel
-</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
+    <title>Online Piano Academy | Parent Panel</title>
 
-<link rel="stylesheet" href="style.css">
-
+    <link
+        rel="stylesheet"
+        href="./style.css?v=6"
+    >
 </head>
 
 
 <body>
 
+    <div class="music-notes">
+        ♪ ♫ ♬ ♪ ♫
+    </div>
 
-<div class="container">
 
+    <main class="container">
 
-<h1>
-🔐 Parent Panel
-</h1>
+        <header class="academy-header">
+            <div class="piano-icon">🎹</div>
 
+            <h1>Online Piano Academy</h1>
 
+            <p>Parent Performance Review</p>
+        </header>
 
-<div class="card">
 
+        <section
+            id="login-card"
+            class="card login-card"
+        >
+            <div class="card-icon">🔐</div>
 
-<h3>
-Enter Password
-</h3>
+            <h2>Parent Login</h2>
 
+            <p>
+                Enter the parent password to review
+                Kiamahr's performance.
+            </p>
 
-<input 
-id="password"
-type="password"
->
+            <label for="password">
+                Password
+            </label>
 
+            <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Enter password"
+            >
 
-<button onclick="login()">
-Login
-</button>
+            <button
+                id="login-button"
+                type="button"
+                class="primary-button"
+            >
+                Unlock Parent Panel
+            </button>
+        </section>
 
 
-</div>
+        <section
+            id="parent-panel"
+            class="card parent-panel"
+            hidden
+        >
+            <div class="card-icon">🎧</div>
 
+            <h2>Review Kiamahr's Performance</h2>
 
+            <p class="panel-description">
+                Select the current evaluation stage.
+                The academy page will update automatically.
+            </p>
 
 
+            <div class="parent-actions">
 
-<div 
-id="panel"
-class="card"
-style="display:none;"
->
+                <button
+                    id="listening-button"
+                    type="button"
+                    class="status-button listening-button"
+                >
+                    <span>🎧</span>
 
+                    <strong>Listening</strong>
 
+                    <small>
+                        We are listening to the performance
+                    </small>
+                </button>
 
-<h2>
-🎹 Review Kiamahr's Performance
-</h2>
 
+                <button
+                    id="reviewing-button"
+                    type="button"
+                    class="status-button reviewing-button"
+                >
+                    <span>🔍</span>
 
+                    <strong>Reviewing</strong>
 
-<button onclick="startListening()">
+                    <small>
+                        Rhythm and accuracy are being checked
+                    </small>
+                </button>
 
-🎧 Listening
 
-</button>
+                <button
+                    id="approve-button"
+                    type="button"
+                    class="status-button approve-button"
+                >
+                    <span>🏆</span>
 
+                    <strong>Approve Performance</strong>
 
-<br><br>
+                    <small>
+                        Confirm performance and award 50 XP
+                    </small>
+                </button>
 
+            </div>
 
 
-<button onclick="reviewing()">
+            <p
+                id="admin-message"
+                class="admin-message"
+                aria-live="polite"
+            ></p>
 
-🔍 Reviewing
+        </section>
 
-</button>
+    </main>
 
 
-<br><br>
-
-
-
-<button onclick="approve()">
-
-🎉 Approve Performance +50 XP
-
-</button>
-
-<p id="admin-message" class="admin-message"></p>
-
-</div>
-
-
-</div>
-
-
-
-
-
-<script type="module" src="./app.js?v=3"></script>
-
-
-
-<script>
-
-
-function login(){
-
-
-let password =
-document.getElementById("password").value;
-
-
-
-if(password === "1234"){
-
-
-document.getElementById("panel")
-.style.display="block";
-
-
-}
-
-else{
-
-alert("Wrong password");
-
-}
-
-
-}
-
-
-
-
-
-async function startListening() {
-    await window.changeStatus(
-        "🎧 We are listening to your performance..."
-    );
-}
-
-
-async function reviewing() {
-    await window.changeStatus(
-        "🔍 Your rhythm and accuracy are being reviewed..."
-    );
-}
-
-
-async function approve() {
-    await window.approveScore(50);
-}
-
-
-
-</script>
-
-
+    <script
+        type="module"
+        src="./app.js?v=6"
+    ></script>
 
 </body>
 
