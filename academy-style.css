@@ -706,3 +706,28 @@ label{
             0 0 0 14px rgba(34, 197, 94, 0);
     }
 }
+
+/* ========================================
+   Teacher's Message
+======================================== */
+
+.teacher-message-content {
+    min-width: 0;
+}
+
+#teacher-message {
+    margin-top: 10px;
+    font-size: 19px;
+    line-height: 1.75;
+    font-weight: 600;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    opacity: 0.96;
+}
+
+@media (max-width: 600px) {
+    #teacher-message {
+        font-size: 17px;
+        line-height: 1.7;
+    }
+}

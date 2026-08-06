@@ -306,3 +306,84 @@ hr {
         flex-basis: auto;
     }
 }
+
+/* ========================================
+   Teacher's Message Editor
+======================================== */
+
+.teacher-message-editor {
+    margin: 26px 0;
+    padding: 22px;
+    border: 1px solid rgba(251, 191, 36, 0.28);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(251, 191, 36, 0.12),
+            rgba(124, 58, 237, 0.10)
+        );
+}
+
+.teacher-message-editor-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.section-kicker {
+    margin: 0 0 5px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.teacher-message-editor h3 {
+    margin: 0;
+}
+
+.teacher-message-help {
+    margin: 10px 0 14px;
+    line-height: 1.55;
+    opacity: 0.8;
+}
+
+#teacher-message-input {
+    width: 100%;
+    min-height: 130px;
+    margin: 0 0 14px;
+    padding: 15px 16px;
+    resize: vertical;
+    font: inherit;
+    line-height: 1.6;
+    color: #ffffff;
+    outline: none;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.10);
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#teacher-message-input::placeholder {
+    color: rgba(255, 255, 255, 0.48);
+}
+
+#teacher-message-input:focus {
+    border-color: rgba(251, 191, 36, 0.72);
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.12);
+}
+
+.teacher-message-button {
+    width: 100%;
+    color: #1f2937;
+    background:
+        linear-gradient(
+            135deg,
+            #fde68a,
+            #f59e0b
+        );
+}

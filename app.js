@@ -351,6 +351,23 @@ function updateAcademyPage(student) {
     const levelBox = getElement("level");
     const progressBar = getElement("progress");
     const progressText = getElement("progress-text");
+    const teacherMessageBox = getElement("teacher-message");
+    const teacherMessageInput = getElement("teacher-message-input");
+
+    const teacherMessage =
+        String(student.teacherMessage || "").trim() ||
+        "Every beautiful performance begins with patient practice, focused listening, and confidence in every note.";
+
+    if (teacherMessageBox) {
+        teacherMessageBox.textContent = teacherMessage;
+    }
+
+    if (
+        teacherMessageInput &&
+        document.activeElement !== teacherMessageInput
+    ) {
+        teacherMessageInput.value = teacherMessage;
+    }
 
     if (statusBox) {
         statusBox.textContent = currentStatus;
@@ -466,6 +483,77 @@ window.changeStatus = async function changeStatus(
         );
     }
 };
+
+async function saveTeacherMessage() {
+    const input = getElement("teacher-message-input");
+    const button = getElement("save-teacher-message-button");
+
+    const message = String(
+        input?.value || ""
+    ).trim();
+
+    if (!message) {
+        setParentMessage(
+            "Please write a teacher's message first.",
+            "error"
+        );
+
+        input?.focus();
+        return;
+    }
+
+    try {
+        if (button) {
+            button.disabled = true;
+            button.textContent = "Saving Message...";
+        }
+
+        setParentMessage(
+            "Saving teacher's message...",
+            "loading"
+        );
+
+        await setDoc(
+            studentRef,
+            {
+                teacherMessage: message,
+                teacherMessageUpdatedAt:
+                    serverTimestamp(),
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
+
+        setParentMessage(
+            "Teacher's message saved successfully.",
+            "success"
+        );
+    } catch (error) {
+        console.error(
+            "Teacher message save error:",
+            error
+        );
+
+        setParentMessage(
+            `Message save failed: ${error.message}`,
+            "error"
+        );
+
+        alert(
+            `Message save failed:
+${error.message}`
+        );
+    } finally {
+        if (button) {
+            button.disabled = false;
+            button.textContent =
+                "Save Teacher's Message";
+        }
+    }
+}
 
 function getBonusData() {
     const checkedBonuses = Array.from(
@@ -870,6 +958,14 @@ function initializeParentPanel() {
         "complete-button"
     );
 
+    const teacherMessageButton = getElement(
+        "save-teacher-message-button"
+    );
+
+    const teacherMessageInput = getElement(
+        "teacher-message-input"
+    );
+
     const calculateButton = getElement(
         "calculate-button"
     );
@@ -951,6 +1047,27 @@ function initializeParentPanel() {
         );
     }
 
+    if (teacherMessageButton) {
+        teacherMessageButton.addEventListener(
+            "click",
+            saveTeacherMessage
+        );
+    }
+
+    if (teacherMessageInput) {
+        teacherMessageInput.addEventListener(
+            "keydown",
+            function (event) {
+                if (
+                    event.ctrlKey &&
+                    event.key === "Enter"
+                ) {
+                    saveTeacherMessage();
+                }
+            }
+        );
+    }
+
     if (calculateButton) {
         calculateButton.addEventListener(
             "click",
@@ -976,6 +1093,8 @@ function initializeParentPanel() {
                 Boolean(reviewingButton),
             completeButton:
                 Boolean(completeButton),
+            teacherMessageButton:
+                Boolean(teacherMessageButton),
             calculateButton:
                 Boolean(calculateButton),
             saveButton:
