@@ -1,97 +1,215 @@
 body {
 
-font-family: Tahoma, Arial;
-background: linear-gradient(
+
+font-family:
+"Trebuchet MS",
+Arial,
+sans-serif;
+
+
+background:
+
+linear-gradient(
 135deg,
 #1e3c72,
 #2a5298
 );
 
+
 margin:0;
+
 padding:20px;
+
 
 color:white;
 
+
 }
+
+
+
 
 
 .container{
 
+
 max-width:600px;
+
 margin:auto;
 
-}
-
-
-.card{
-
-background:white;
-color:#333;
-
-border-radius:20px;
-
-padding:20px;
-
-margin-top:20px;
-
-box-shadow:
-0 10px 30px rgba(0,0,0,.2);
 
 }
+
+
 
 
 h1{
 
+
 text-align:center;
 
+font-size:34px;
+
 }
+
+
+
+
+
+.card{
+
+
+background:
+
+rgba(255,255,255,0.95);
+
+
+color:#333;
+
+
+border-radius:25px;
+
+
+padding:25px;
+
+
+margin-top:20px;
+
+
+box-shadow:
+
+0 10px 25px rgba(0,0,0,.25);
+
+
+}
+
+
+
+
+
+.profile{
+
+
+text-align:center;
+
+
+}
+
+
+
+
+
+.level{
+
+
+display:inline-block;
+
+
+background:#ffd166;
+
+
+padding:10px 25px;
+
+
+border-radius:30px;
+
+
+font-weight:bold;
+
+
+}
+
+
+
+
+.status-box{
+
+
+background:#eef7ff;
+
+
+border-left:
+
+6px solid #4cc9f0;
+
+
+padding:15px;
+
+
+font-size:20px;
+
+
+}
+
+
 
 
 .stat{
 
+
 font-size:22px;
 
-margin:10px;
+
+margin:15px;
+
 
 }
 
 
-button{
 
-background:#ffb703;
-
-border:none;
-
-padding:12px 25px;
-
-border-radius:30px;
-
-font-size:18px;
-
-cursor:pointer;
-
-}
 
 
 .progress{
 
-height:20px;
+
+height:25px;
+
 
 background:#ddd;
 
+
 border-radius:20px;
 
+
 overflow:hidden;
+
 
 }
 
 
+
+
 .progress-bar{
+
 
 height:100%;
 
-background:#06d6a0;
 
 width:0%;
+
+
+background:
+
+linear-gradient(
+90deg,
+#06d6a0,
+#118ab2
+);
+
+
+}
+
+
+
+
+
+.message{
+
+
+text-align:center;
+
+
+font-size:18px;
+
 
 }
