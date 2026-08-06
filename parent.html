@@ -146,11 +146,44 @@
     </main>
 
 
-    <script
-        type="module"
-        src="./app.js?v=6"
-    ></script>
+ <script
+    type="module"
+    src="./app.js?v=10"
+></script>
+
+
+<script>
+function login() {
+    const password =
+        document.getElementById("password").value;
+
+    if (password === "1234") {
+        document.getElementById("panel")
+            .style.display = "block";
+    } else {
+        alert("Wrong password");
+    }
+}
+
+
+async function startListening() {
+    await window.changeStatus(
+        "🎧 We are listening to your performance..."
+    );
+}
+
+
+async function reviewing() {
+    await window.changeStatus(
+        "🔍 Your rhythm and accuracy are being reviewed..."
+    );
+}
+
+
+async function approve() {
+    await window.approveScore(50);
+}
+</script>
 
 </body>
-
 </html>
