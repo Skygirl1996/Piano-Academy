@@ -1,162 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Piano Academy</title>
-
-    <link
-        rel="stylesheet"
-        href="./academy-style.css?v=102"
-    >
-
+    <link rel="stylesheet" href="./academy-style.css?v=110">
 </head>
 
-
 <body class="academy-page">
-
-
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
     <div class="bg-orb orb-3"></div>
-
 
     <div class="floating-notes note-1">♪</div>
     <div class="floating-notes note-2">♫</div>
     <div class="floating-notes note-3">♬</div>
     <div class="floating-notes note-4">♪</div>
 
-
     <main class="container academy-container">
-
-
-        <!-- Academy Header -->
-
         <header class="academy-hero glass-card">
-
             <div class="hero-left">
-
-                <div class="hero-logo">
-                    🎹
-                </div>
+                <div class="hero-logo">🎹</div>
 
                 <div>
-
-                    <p class="eyebrow">
-                        Professional Music Journey
-                    </p>
-
-                    <h1>
-                        Online Piano Academy
-                    </h1>
-
+                    <p class="eyebrow">Professional Music Journey</p>
+                    <h1>Online Piano Academy</h1>
                     <p class="hero-subtitle">
-                        A premium piano learning experience
-                        for Kiamahr
+                        A premium piano learning experience for Kiamahr
                     </p>
-
                 </div>
-
             </div>
-
 
             <div class="hero-right">
-
-                <div class="hero-pill">
-                    Young Pianist
-                </div>
-
+                <div class="hero-pill">Young Pianist</div>
             </div>
-
         </header>
 
-
-
-        <!-- Student Information -->
-
         <section class="student-card glass-card">
-
-            <div class="student-avatar">
-                🎼
-            </div>
-
+            <div class="student-avatar">🎼</div>
 
             <div class="student-info">
-
-                <p class="mini-label">
-                    Student
-                </p>
-
-                <h2>
-                    Kiamahr
-                </h2>
-
-                <p>
-                    Keep practicing and enjoy the journey
-                </p>
-
+                <p class="mini-label">Student</p>
+                <h2>Kiamahr</h2>
+                <p>Keep practicing and enjoy the journey</p>
             </div>
 
-
-            <div
-                id="level"
-                class="level-badge"
-            >
-                ⭐ Level 1
-            </div>
-
+            <div id="level" class="level-badge">⭐ Level 1</div>
         </section>
 
-
-
-        <!-- XP and Level Progress -->
-
         <section class="dashboard-grid">
-
-
             <div class="glass-card stat-card">
-
-                <div class="stat-icon">
-                    🏆
-                </div>
+                <div class="stat-icon">🏆</div>
 
                 <div>
-
-                    <p class="mini-label">
-                        Experience Points
-                    </p>
-
-                    <h3 id="score">
-                        0 XP
-                    </h3>
-
+                    <p class="mini-label">Experience Points</p>
+                    <h3 id="score">0 XP</h3>
                 </div>
-
             </div>
 
-
-
             <div class="glass-card stat-card">
-
-                <div class="stat-icon">
-                    📈
-                </div>
+                <div class="stat-icon">📈</div>
 
                 <div class="progress-information">
-
-                    <p class="mini-label">
-                        Progress to Next Level
-                    </p>
+                    <p class="mini-label">Progress to Next Level</p>
 
                     <div class="progress-shell">
-
                         <div
                             id="progress"
                             class="progress-bar"
@@ -165,33 +73,20 @@
                             aria-valuemax="100"
                             aria-valuenow="0"
                         ></div>
-
                     </div>
 
-                    <p
-                        id="progress-text"
-                        class="progress-text"
-                    >
+                    <p id="progress-text" class="progress-text">
                         0 / 500 XP
                     </p>
-
                 </div>
-
             </div>
-
         </section>
-
-
-
-        <!-- Live Evaluation Status -->
 
         <section
             id="status-box"
             class="glass-card performance-card status-connecting"
         >
-
             <div class="section-head">
-
                 <div
                     id="status-icon"
                     class="status-icon status-connecting-icon"
@@ -200,312 +95,117 @@
                 </div>
 
                 <div>
-
-                    <p class="mini-label">
-                        Today's Performance
-                    </p>
-
-                    <h2>
-                        Live Evaluation Status
-                    </h2>
-
+                    <p class="mini-label">Today's Performance</p>
+                    <h2>Live Evaluation Status</h2>
                 </div>
-
             </div>
 
-
-            <p
-                id="status"
-                class="status-text"
-            >
+            <p id="status" class="status-text">
                 Connecting to the academy...
             </p>
-
         </section>
 
-
-
-        <!-- Dynamic Performance Report -->
-
-        <section
-            class="glass-card report-card"
-            id="report-card"
-        >
-
+        <section class="glass-card report-card" id="report-card">
             <div class="report-header">
-
                 <div>
-
-                    <h2>
-                        🎹 Performance Report
-                    </h2>
-
-                    <p>
-                        Your latest piano achievement
-                    </p>
-
+                    <h2>🎹 Performance Report</h2>
+                    <p>Your latest piano achievement</p>
                 </div>
-
             </div>
 
-
-
-            <div
-                id="report-empty"
-                class="report-empty"
-            >
+            <div id="report-empty" class="report-empty">
                 No performance has been saved yet.
             </div>
 
-
-
-            <div
-                id="report-content"
-                hidden
-            >
-
-
-                <div
-                    class="report-item"
-                    id="report-song-row"
-                >
-
-                    <span>
-                        🎵 Song
-                    </span>
-
-                    <strong id="report-song">
-                        —
-                    </strong>
-
+            <div id="report-content" hidden>
+                <div class="report-item" id="report-song-row">
+                    <span>🎵 Song</span>
+                    <strong id="report-song">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-performance-row"
-                >
-
-                    <span>
-                        ⭐ Performance Quality
-                    </span>
-
-                    <strong id="report-performance">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-performance-row">
+                    <span>⭐ Performance Quality</span>
+                    <strong id="report-performance">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-repetition-row"
-                >
-
-                    <span>
-                        🔁 Practice Consistency
-                    </span>
-
-                    <strong id="report-repetition">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-repetition-row">
+                    <span>🔁 Practice Consistency</span>
+                    <strong id="report-repetition">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-difficulty-row"
-                >
-
-                    <span>
-                        🚀 Difficulty Challenge
-                    </span>
-
-                    <strong id="report-difficulty">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-difficulty-row">
+                    <span>🚀 Difficulty Challenge</span>
+                    <strong id="report-difficulty">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-bonus-row"
-                >
-
-                    <span>
-                        🏆 Achievement
-                    </span>
-
-                    <strong id="report-bonus">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-bonus-row">
+                    <span>🏆 Achievement</span>
+                    <strong id="report-bonus">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-rhythm-row"
-                >
-
-                    <span>
-                        🥁 Rhythm
-                    </span>
-
-                    <strong id="report-rhythm">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-rhythm-row">
+                    <span>🥁 Rhythm</span>
+                    <strong id="report-rhythm">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-notes-row"
-                >
-
-                    <span>
-                        🎼 Notes
-                    </span>
-
-                    <strong id="report-notes">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-notes-row">
+                    <span>🎼 Notes</span>
+                    <strong id="report-notes">—</strong>
                 </div>
 
-
-
-                <div
-                    class="report-item"
-                    id="report-expression-row"
-                >
-
-                    <span>
-                        🎭 Expression
-                    </span>
-
-                    <strong id="report-expression">
-                        —
-                    </strong>
-
+                <div class="report-item" id="report-expression-row">
+                    <span>🎭 Expression</span>
+                    <strong id="report-expression">—</strong>
                 </div>
-
-
 
                 <div class="report-total">
-
-                    <span>
-                        Total Earned
-                    </span>
+                    <span>Total Earned</span>
 
                     <strong>
-
-                        <span id="report-total-xp">
-                            0
-                        </span>
-
+                        <span id="report-total-xp">0</span>
                         XP ⭐
-
                     </strong>
 
                     <small>
-
                         Reward:
-
-                        <span id="report-reward">
-                            0
-                        </span>
-
+                        <span id="report-reward">0</span>
                         تومان
-
                     </small>
-
                 </div>
-
             </div>
-
         </section>
-
-
-
-        <!-- Teacher Message -->
 
         <section class="glass-card teacher-card">
-
-            <div class="teacher-badge">
-                🌟
-            </div>
+            <div class="teacher-badge">🌟</div>
 
             <div>
-
-                <p class="mini-label">
-                    Teacher's Message
-                </p>
-
-                <h2>
-                    Keep Going
-                </h2>
-
+                <p class="mini-label">Teacher's Message</p>
+                <h2>Keep Going</h2>
                 <p>
-                    Every beautiful performance begins
-                    with patient practice, focused listening,
-                    and confidence in every note.
+                    Every beautiful performance begins with patient practice,
+                    focused listening, and confidence in every note.
                 </p>
-
             </div>
-
         </section>
-
-
-
-        <!-- Piano Decoration -->
 
         <section class="piano-strip glass-card">
-
             <div class="piano-keys">
-
                 <span class="white"></span>
                 <span class="black b1"></span>
-
                 <span class="white"></span>
                 <span class="black b2"></span>
-
                 <span class="white"></span>
-
                 <span class="white"></span>
                 <span class="black b3"></span>
-
                 <span class="white"></span>
                 <span class="black b4"></span>
-
                 <span class="white"></span>
                 <span class="black b5"></span>
-
                 <span class="white"></span>
-
             </div>
-
         </section>
-
-
     </main>
 
-
-    <script
-        type="module"
-        src="./app.js?v=100"
-    ></script>
-
-
+    <script type="module" src="./app.js?v=110"></script>
 </body>
-
 </html>
