@@ -4,12 +4,16 @@ import {
     doc,
     onSnapshot,
     setDoc,
+    addDoc,
+    collection,
     increment,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-const studentRef = doc(
+
+const studentRef =
+doc(
     db,
     "users",
     "kiamaher"
@@ -19,7 +23,7 @@ const studentRef = doc(
 
 
 // ==============================
-// Status Animation Controller
+// Status Animation
 // ==============================
 
 
@@ -27,21 +31,15 @@ function updateStatusAnimation(statusText){
 
 
     const statusBox =
-    document.getElementById(
-        "status-box"
-    );
+    document.getElementById("status-box");
 
 
     const statusIcon =
-    document.getElementById(
-        "status-icon"
-    );
+    document.getElementById("status-icon");
 
 
     if(!statusBox || !statusIcon){
-
         return;
-
     }
 
 
@@ -64,15 +62,12 @@ function updateStatusAnimation(statusText){
 
 
     const text =
-    String(statusText || "")
-    .toLowerCase();
+    String(statusText).toLowerCase();
 
 
 
+    if(text.includes("listening")){
 
-    if(
-        text.includes("listening")
-    ){
 
         statusBox.classList.add(
             "status-listening"
@@ -84,12 +79,9 @@ function updateStatusAnimation(statusText){
         );
 
 
-        statusIcon.textContent =
-        "🎧";
-
+        statusIcon.textContent="🎧";
 
     }
-
 
 
     else if(
@@ -109,13 +101,9 @@ function updateStatusAnimation(statusText){
         );
 
 
-        statusIcon.textContent =
-        "🔍";
-
+        statusIcon.textContent="🔍";
 
     }
-
-
 
 
     else if(
@@ -135,13 +123,9 @@ function updateStatusAnimation(statusText){
         );
 
 
-        statusIcon.textContent =
-        "🏆";
-
+        statusIcon.textContent="🏆";
 
     }
-
-
 
 
     else{
@@ -152,14 +136,7 @@ function updateStatusAnimation(statusText){
         );
 
 
-        statusIcon.classList.add(
-            "status-connecting-icon"
-        );
-
-
-        statusIcon.textContent =
-        "♪";
-
+        statusIcon.textContent="♪";
 
     }
 
@@ -170,190 +147,103 @@ function updateStatusAnimation(statusText){
 
 
 
-
 // ==============================
-// Firebase Listener
+// Firebase Student Listener
 // ==============================
 
 
 onSnapshot(
 
-    studentRef,
+studentRef,
 
 
-    function(snapshot){
+(snapshot)=>{
 
 
-        if(!snapshot.exists()){
+    if(!snapshot.exists()){
+        return;
+    }
 
 
-            console.error(
-                "Student document does not exist."
-            );
 
+    const student =
+    snapshot.data();
 
-            return;
 
-        }
 
+    const status =
+    student.musicStatus ||
+    "🎹 Waiting for your performance...";
 
 
-        const student =
-        snapshot.data();
 
+    const statusBox =
+    document.getElementById("status");
 
 
 
-        const statusBox =
-        document.getElementById(
-            "status"
-        );
+    if(statusBox){
 
-
-
-        const scoreBox =
-        document.getElementById(
-            "score"
-        );
-
-
-
-        const levelBox =
-        document.getElementById(
-            "level"
-        );
-
-
-
-        const progressBar =
-        document.getElementById(
-            "progress"
-        );
-
-
-
-
-
-        const currentStatus =
-        student.musicStatus ||
-        "🎹 Waiting for your performance...";
-
-
-
-
-        if(statusBox){
-
-
-            statusBox.textContent =
-            currentStatus;
-
-
-        }
-
-
-
-
-        updateStatusAnimation(
-            currentStatus
-        );
-
-
-
-
-
-
-        const xp =
-        Number(student.xp) || 0;
-
-
-
-        const level =
-        Number(student.level) || 1;
-
-
-
-
-        if(scoreBox){
-
-
-            scoreBox.textContent =
-            xp + " XP";
-
-
-        }
-
-
-
-
-        if(levelBox){
-
-
-            levelBox.textContent =
-            "⭐ Level " + level;
-
-
-        }
-
-
-
-
-
-        if(progressBar){
-
-
-            progressBar.style.width =
-            Math.min(
-                (xp / 500) * 100,
-                100
-            )
-            + "%";
-
-
-        }
-
-
-
-        console.log(
-            "Firebase data received:",
-            student
-        );
-
-
-    },
-
-
-
-    function(error){
-
-
-
-        console.error(
-            "Firebase listener error:",
-            error
-        );
-
-
-
-        const statusBox =
-        document.getElementById(
-            "status"
-        );
-
-
-
-        if(statusBox){
-
-
-            statusBox.textContent =
-            "Firebase error: "
-            + error.message;
-
-
-        }
-
+        statusBox.textContent=status;
 
     }
 
+
+
+    updateStatusAnimation(status);
+
+
+
+
+    const xp =
+    Number(student.xp)||0;
+
+
+    const level =
+    Number(student.level)||1;
+
+
+
+    const scoreBox =
+    document.getElementById("score");
+
+
+    const levelBox =
+    document.getElementById("level");
+
+
+    const progress =
+    document.getElementById("progress");
+
+
+
+    if(scoreBox){
+
+        scoreBox.textContent =
+        xp+" XP";
+
+    }
+
+
+
+    if(levelBox){
+
+        levelBox.textContent =
+        "⭐ Level "+level;
+
+    }
+
+
+
+    if(progress){
+
+        progress.style.width =
+        Math.min((xp/500)*100,100)+"%";
+
+    }
+
+
+}
 
 );
 
@@ -364,72 +254,33 @@ onSnapshot(
 
 
 
-
 // ==============================
-// Update Performance Status
+// Change Status
 // ==============================
 
 
 window.changeStatus =
-
-async function(newStatus){
-
-
-    try{
+async function(status){
 
 
-        await setDoc(
+    await setDoc(
 
-            studentRef,
+        studentRef,
 
+        {
 
-            {
+            musicStatus:status,
 
-                musicStatus:newStatus,
+            updatedAt:
+            serverTimestamp()
 
+        },
 
-                updatedAt:
-                serverTimestamp()
+        {
+            merge:true
+        }
 
-
-            },
-
-
-            {
-
-                merge:true
-
-            }
-
-        );
-
-
-
-        console.log(
-            "Status updated"
-        );
-
-
-    }
-
-
-
-    catch(error){
-
-
-
-        console.error(
-            error
-        );
-
-
-
-        alert(
-            error.message
-        );
-
-
-    }
+    );
 
 
 };
@@ -443,99 +294,7 @@ async function(newStatus){
 
 
 // ==============================
-// Approve Score
-// ==============================
-
-
-window.approveScore =
-
-async function(points){
-
-
-
-    try{
-
-
-        await setDoc(
-
-            studentRef,
-
-
-            {
-
-
-                musicStatus:
-                "🎉 Congratulations! Your performance has been approved.",
-
-
-
-                xp:
-                increment(
-                    Number(points)
-                ),
-
-
-
-                updatedAt:
-                serverTimestamp()
-
-
-
-            },
-
-
-            {
-
-                merge:true
-
-            }
-
-        );
-
-
-
-        alert(
-            "Approved +" +
-            points +
-            " XP"
-        );
-
-
-    }
-
-
-
-    catch(error){
-
-
-
-        console.error(
-            error
-        );
-
-
-
-        alert(
-            error.message
-        );
-
-
-    }
-
-
-
-};
-
-
-
-
-
-
-
-
-
-// ==============================
-// Performance Evaluation
+// XP Calculator
 // ==============================
 
 
@@ -546,25 +305,13 @@ function getSelectValue(id){
     document.getElementById(id);
 
 
-
-    if(element){
-
-
-        return Number(
-            element.value
-        );
-
-
-    }
-
-
-    return 0;
-
+    return element
+    ?
+    Number(element.value)
+    :
+    0;
 
 }
-
-
-
 
 
 
@@ -573,173 +320,94 @@ function getSelectValue(id){
 function calculateXP(){
 
 
-
     let base =
-    getSelectValue(
-        "performance"
-    );
-
+    getSelectValue("performance");
 
 
     let repetition =
-    getSelectValue(
-        "repetition"
-    );
-
+    getSelectValue("repetition");
 
 
     let difficulty =
-    getSelectValue(
-        "difficulty"
-    );
-
-
-
-    if(difficulty === 0){
-
-
-        difficulty = 1;
-
-
-    }
-
-
-
+    getSelectValue("difficulty");
 
 
 
     let rhythm =
-    getSelectValue(
-        "rhythm"
-    );
-
+    getSelectValue("rhythm");
 
 
     let notes =
-    getSelectValue(
-        "notes"
-    );
-
+    getSelectValue("notes");
 
 
     let expression =
-    getSelectValue(
-        "expression"
-    );
+    getSelectValue("expression");
+
+
+
+    if(difficulty===0){
+
+        difficulty=1;
+
+    }
 
 
 
 
-
-
-
-    let bonuses = 0;
+    let bonusXP=0;
 
 
 
     document
-    .querySelectorAll(
-        ".bonus:checked"
-    )
-    .forEach(
+    .querySelectorAll(".bonus:checked")
+    .forEach(item=>{
 
-        function(item){
+        bonusXP +=
+        Number(item.value);
 
-
-            bonuses +=
-            Number(item.value);
-
-
-        }
-
-    );
+    });
 
 
 
 
 
-
-    let finalXP =
-
+    let total =
 
     (
-
-        base +
-
-        repetition +
-
-        bonuses +
-
-        rhythm +
-
-        notes +
-
-        expression
-
+        base+
+        repetition+
+        rhythm+
+        notes+
+        expression+
+        bonusXP
 
     )
-
     *
-
     difficulty;
 
 
 
-
-
-    finalXP =
-    Math.round(
-        finalXP
-    );
+    total =
+    Math.round(total);
 
 
 
 
-
-    const xpBox =
-    document.getElementById(
-        "final-xp"
-    );
+    document
+    .getElementById("final-xp")
+    .innerText=total;
 
 
 
-    const moneyBox =
-    document.getElementById(
-        "reward"
-    );
+    document
+    .getElementById("reward")
+    .innerText=
+    total*100;
 
 
 
-
-
-    if(xpBox){
-
-
-        xpBox.innerText =
-        finalXP;
-
-
-    }
-
-
-
-
-
-    if(moneyBox){
-
-
-        moneyBox.innerText =
-        finalXP * 100;
-
-
-    }
-
-
-
-
-
-    return finalXP;
-
+    return total;
 
 }
 
@@ -749,30 +417,163 @@ function calculateXP(){
 
 
 
-
-const calculateButton =
-document.getElementById(
-    "calculate-button"
+document
+.getElementById("calculate-button")
+?.addEventListener(
+"click",
+calculateXP
 );
 
 
 
 
 
-if(calculateButton){
 
 
 
-    calculateButton.addEventListener(
 
-        "click",
+// ==============================
+// Save Performance
+// ==============================
 
-        calculateXP
+
+async function savePerformance(){
+
+
+    const totalXP =
+    calculateXP();
+
+
+
+    const song =
+    document
+    .getElementById("song-name")
+    .value
+    ||
+    "Unknown Song";
+
+
+
+    const report = {
+
+
+        studentId:
+        "kiamaher",
+
+
+        song:song,
+
+
+        performanceXP:
+        getSelectValue("performance"),
+
+
+        repetitionXP:
+        getSelectValue("repetition"),
+
+
+        rhythmXP:
+        getSelectValue("rhythm"),
+
+
+        notesXP:
+        getSelectValue("notes"),
+
+
+        expressionXP:
+        getSelectValue("expression"),
+
+
+
+        totalXP:totalXP,
+
+
+        reward:
+        totalXP*100,
+
+
+        createdAt:
+        serverTimestamp()
+
+
+    };
+
+
+
+
+
+    await addDoc(
+
+        collection(
+            db,
+            "performanceLogs"
+        ),
+
+        report
 
     );
 
 
+
+
+
+
+    await setDoc(
+
+        studentRef,
+
+        {
+
+
+            xp:
+            increment(totalXP),
+
+
+
+            musicStatus:
+            "🎉 Congratulations! Your performance has been approved.",
+
+
+            latestReport:
+            report,
+
+
+            updatedAt:
+            serverTimestamp()
+
+
+        },
+
+
+        {
+            merge:true
+        }
+
+    );
+
+
+
+    alert(
+        "Performance saved +"+
+        totalXP+
+        " XP"
+    );
+
+
 }
+
+
+
+
+
+
+
+document
+.getElementById("save-button")
+?.addEventListener(
+"click",
+savePerformance
+);
 
 
 
@@ -780,5 +581,5 @@ if(calculateButton){
 
 
 console.log(
-    "app.js loaded successfully."
+"app.js loaded successfully"
 );
