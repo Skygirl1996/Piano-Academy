@@ -3,23 +3,25 @@ import { db } from "./firebase.js";
 import {
     collection,
     doc,
-    increment,
     onSnapshot,
+    runTransaction,
     serverTimestamp,
-    setDoc,
-    writeBatch
+    setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+
+const STUDENT_ID = "kiamaher";
+const XP_PER_LEVEL = 500;
 
 const studentRef = doc(
     db,
     "users",
-    "kiamaher"
+    STUDENT_ID
 );
 
 
 // ========================================
-// General helpers
+// Helpers
 // ========================================
 
 function getElement(id) {
@@ -42,9 +44,11 @@ function setParentMessage(message, type = "success") {
 function getSelectValue(id) {
     const element = getElement(id);
 
-    return element
-        ? Number(element.value) || 0
-        : 0;
+    if (!element) {
+        return 0;
+    }
+
+    return Number(element.value) || 0;
 }
 
 
@@ -55,19 +59,63 @@ function getSelectText(id) {
         return "None";
     }
 
-    return element.options[
-        element.selectedIndex
-    ]?.textContent.trim() || "None";
+    return (
+        element.options[element.selectedIndex]
+            ?.textContent
+            .replace(/\s+/g, " ")
+            .trim() || "None"
+    );
 }
 
 
 // ========================================
-// Status animation
+// Level System
+// ========================================
+
+function calculateLevelData(totalXP) {
+    const safeXP = Math.max(
+        0,
+        Number(totalXP) || 0
+    );
+
+    const level =
+        Math.floor(
+            safeXP / XP_PER_LEVEL
+        ) + 1;
+
+    const xpInCurrentLevel =
+        safeXP % XP_PER_LEVEL;
+
+    const progressPercent =
+        (
+            xpInCurrentLevel /
+            XP_PER_LEVEL
+        ) * 100;
+
+    const xpRemaining =
+        XP_PER_LEVEL -
+        xpInCurrentLevel;
+
+    return {
+        totalXP: safeXP,
+        level,
+        xpInCurrentLevel,
+        progressPercent,
+        xpRemaining
+    };
+}
+
+
+// ========================================
+// Status Animation
 // ========================================
 
 function updateStatusAnimation(statusText) {
-    const statusBox = getElement("status-box");
-    const statusIcon = getElement("status-icon");
+    const statusBox =
+        getElement("status-box");
+
+    const statusIcon =
+        getElement("status-icon");
 
     if (!statusBox || !statusIcon) {
         return;
@@ -87,8 +135,9 @@ function updateStatusAnimation(statusText) {
         "status-approved-icon"
     );
 
-    const text = String(statusText || "")
-        .toLowerCase();
+    const text = String(
+        statusText || ""
+    ).toLowerCase();
 
     if (text.includes("listening")) {
         statusBox.classList.add(
@@ -148,7 +197,103 @@ function updateStatusAnimation(statusText) {
 
 
 // ========================================
-// Live Firebase listener
+// Update Child Academy Page
+// ========================================
+
+function updateAcademyPage(student) {
+    const currentStatus =
+        student.musicStatus ||
+        "🎹 Waiting for your performance...";
+
+    const levelData =
+        calculateLevelData(student.xp);
+
+    const statusBox =
+        getElement("status");
+
+    const scoreBox =
+        getElement("score");
+
+    const levelBox =
+        getElement("level");
+
+    const progressBar =
+        getElement("progress");
+
+    const progressText =
+        getElement("progress-text");
+
+    const currentLevelXP =
+        getElement("current-level-xp");
+
+    const nextLevelXP =
+        getElement("next-level-xp");
+
+    if (statusBox) {
+        statusBox.textContent =
+            currentStatus;
+    }
+
+    /*
+    امتیاز کل کودک
+    */
+    if (scoreBox) {
+        scoreBox.textContent =
+            `${levelData.totalXP.toLocaleString()} XP`;
+    }
+
+    /*
+    Level محاسبه‌شده از روی XP
+    */
+    if (levelBox) {
+        levelBox.textContent =
+            `⭐ Level ${levelData.level}`;
+    }
+
+    /*
+    نوار پیشرفت Level فعلی
+    */
+    if (progressBar) {
+        progressBar.style.width =
+            `${levelData.progressPercent}%`;
+
+        progressBar.setAttribute(
+            "aria-valuenow",
+            String(
+                Math.round(
+                    levelData.progressPercent
+                )
+            )
+        );
+    }
+
+    /*
+    این بخش‌ها اختیاری هستند.
+    اگر در HTML وجود داشته باشند آپدیت می‌شوند.
+    */
+    if (progressText) {
+        progressText.textContent =
+            `${levelData.xpInCurrentLevel} / ${XP_PER_LEVEL} XP`;
+    }
+
+    if (currentLevelXP) {
+        currentLevelXP.textContent =
+            levelData.xpInCurrentLevel;
+    }
+
+    if (nextLevelXP) {
+        nextLevelXP.textContent =
+            XP_PER_LEVEL;
+    }
+
+    updateStatusAnimation(
+        currentStatus
+    );
+}
+
+
+// ========================================
+// Live Firebase Listener
 // ========================================
 
 function startStudentListener() {
@@ -161,7 +306,8 @@ function startStudentListener() {
                     "Student document does not exist."
                 );
 
-                const statusBox = getElement("status");
+                const statusBox =
+                    getElement("status");
 
                 if (statusBox) {
                     statusBox.textContent =
@@ -171,61 +317,13 @@ function startStudentListener() {
                 return;
             }
 
-            const student = snapshot.data();
+            const student =
+                snapshot.data();
 
-            const currentStatus =
-                student.musicStatus ||
-                "🎹 Waiting for your performance...";
-
-            const xp = Number(student.xp) || 0;
-
-            /*
-            Firestore فعلاً level را صفر ذخیره کرده است.
-            بنابراین مقدار کمتر از 1 را Level 1 نشان می‌دهیم.
-            */
-            const storedLevel =
-                Number(student.level) || 1;
-
-            const level =
-                Math.max(storedLevel, 1);
-
-            const statusBox = getElement("status");
-            const scoreBox = getElement("score");
-            const levelBox = getElement("level");
-            const progressBar = getElement("progress");
-
-            if (statusBox) {
-                statusBox.textContent =
-                    currentStatus;
-            }
-
-            if (scoreBox) {
-                scoreBox.textContent =
-                    `${xp} XP`;
-            }
-
-            if (levelBox) {
-                levelBox.textContent =
-                    `⭐ Level ${level}`;
-            }
-
-            if (progressBar) {
-                const percentage =
-                    Math.min(
-                        (xp / 500) * 100,
-                        100
-                    );
-
-                progressBar.style.width =
-                    `${percentage}%`;
-            }
-
-            updateStatusAnimation(
-                currentStatus
-            );
+            updateAcademyPage(student);
 
             console.log(
-                "Firebase data received:",
+                "Firebase student updated:",
                 student
             );
         },
@@ -236,7 +334,8 @@ function startStudentListener() {
                 error
             );
 
-            const statusBox = getElement("status");
+            const statusBox =
+                getElement("status");
 
             if (statusBox) {
                 statusBox.textContent =
@@ -253,7 +352,7 @@ function startStudentListener() {
 
 
 // ========================================
-// Change performance status
+// Change Status
 // ========================================
 
 window.changeStatus =
@@ -263,7 +362,8 @@ async function changeStatus(newStatus) {
             studentRef,
             {
                 musicStatus: newStatus,
-                updatedAt: serverTimestamp()
+                updatedAt:
+                    serverTimestamp()
             },
             {
                 merge: true
@@ -284,36 +384,50 @@ async function changeStatus(newStatus) {
             `Status update failed: ${error.message}`,
             "error"
         );
+
+        alert(
+            `Status update failed:\n${error.message}`
+        );
     }
 };
 
 
 // ========================================
-// XP calculation
+// Bonuses
 // ========================================
 
 function getBonusData() {
-    const checkedBonuses = Array.from(
-        document.querySelectorAll(
-            ".bonus:checked"
-        )
-    );
+    const checkedBonuses =
+        Array.from(
+            document.querySelectorAll(
+                ".bonus:checked"
+            )
+        );
 
-    const bonusXP = checkedBonuses.reduce(
-        function (total, item) {
-            return total + Number(item.value);
-        },
-        0
-    );
+    const bonusXP =
+        checkedBonuses.reduce(
+            function (total, item) {
+                return (
+                    total +
+                    Number(item.value)
+                );
+            },
+            0
+        );
 
-    const bonusLabels = checkedBonuses.map(
-        function (item) {
-            return item.closest("label")
-                ?.textContent
-                .replace(/\s+/g, " ")
-                .trim() || "Bonus";
-        }
-    );
+    const bonusLabels =
+        checkedBonuses.map(
+            function (item) {
+                return (
+                    item
+                        .closest("label")
+                        ?.textContent
+                        .replace(/\s+/g, " ")
+                        .trim() ||
+                    "Bonus"
+                );
+            }
+        );
 
     return {
         bonusXP,
@@ -321,6 +435,10 @@ function getBonusData() {
     };
 }
 
+
+// ========================================
+// Calculate Performance XP
+// ========================================
 
 function calculatePerformance() {
     const performanceXP =
@@ -358,18 +476,16 @@ function calculatePerformance() {
         expressionXP +
         bonusXP;
 
-    /*
-    امتیازهای منفی روی جمع اثر می‌گذارند،
-    اما کل امتیاز یک ارزیابی کمتر از صفر نمی‌شود.
-    */
     const finalXP = Math.max(
         0,
         Math.round(
-            subtotal * difficultyMultiplier
+            subtotal *
+            difficultyMultiplier
         )
     );
 
-    const reward = finalXP * 100;
+    const reward =
+        finalXP * 100;
 
     return {
         performanceXP,
@@ -418,7 +534,7 @@ function calculateXP() {
 
     if (xpBox) {
         xpBox.textContent =
-            result.finalXP;
+            result.finalXP.toLocaleString();
     }
 
     if (rewardBox) {
@@ -427,7 +543,7 @@ function calculateXP() {
     }
 
     setParentMessage(
-        `Calculated: ${result.finalXP} XP`,
+        `Calculated: ${result.finalXP.toLocaleString()} XP`,
         "success"
     );
 
@@ -436,7 +552,7 @@ function calculateXP() {
 
 
 // ========================================
-// Save performance
+// Save Performance
 // ========================================
 
 async function savePerformance() {
@@ -523,60 +639,155 @@ async function savePerformance() {
                 Date.now()
         };
 
-        /*
-        یک Batch استفاده می‌کنیم تا گزارش و
-        افزایش امتیاز با هم ثبت شوند.
-        */
-        const batch =
-            writeBatch(db);
+        const logRef = doc(
+            collection(
+                db,
+                "performanceLogs"
+            )
+        );
 
-        const logRef =
-            doc(
-                collection(
-                    db,
-                    "performanceLogs"
-                )
+        const savedResult =
+            await runTransaction(
+                db,
+
+                async function (transaction) {
+                    const studentSnapshot =
+                        await transaction.get(
+                            studentRef
+                        );
+
+                    if (
+                        !studentSnapshot.exists()
+                    ) {
+                        throw new Error(
+                            "Student profile does not exist."
+                        );
+                    }
+
+                    const student =
+                        studentSnapshot.data();
+
+                    const currentXP =
+                        Math.max(
+                            0,
+                            Number(student.xp) || 0
+                        );
+
+                    const currentMoney =
+                        Math.max(
+                            0,
+                            Number(
+                                student.moneyBalance
+                            ) || 0
+                        );
+
+                    const totalEarnedMoney =
+                        Math.max(
+                            0,
+                            Number(
+                                student.totalEarnedMoney
+                            ) || 0
+                        );
+
+                    const totalPerformances =
+                        Math.max(
+                            0,
+                            Number(
+                                student.totalPerformances
+                            ) || 0
+                        );
+
+                    const newTotalXP =
+                        currentXP +
+                        result.finalXP;
+
+                    const newLevelData =
+                        calculateLevelData(
+                            newTotalXP
+                        );
+
+                    const newMoneyBalance =
+                        currentMoney +
+                        result.reward;
+
+                    const newTotalEarned =
+                        totalEarnedMoney +
+                        result.reward;
+
+                    transaction.set(
+                        logRef,
+                        {
+                            studentId:
+                                STUDENT_ID,
+
+                            previousXP:
+                                currentXP,
+
+                            newTotalXP,
+
+                            level:
+                                newLevelData.level,
+
+                            ...latestReport,
+
+                            createdAt:
+                                serverTimestamp()
+                        }
+                    );
+
+                    transaction.set(
+                        studentRef,
+                        {
+                            xp:
+                                newTotalXP,
+
+                            level:
+                                newLevelData.level,
+
+                            moneyBalance:
+                                newMoneyBalance,
+
+                            totalEarnedMoney:
+                                newTotalEarned,
+
+                            totalPerformances:
+                                totalPerformances + 1,
+
+                            latestReport,
+
+                            musicStatus:
+                                "🎉 Congratulations! Your performance has been approved.",
+
+                            updatedAt:
+                                serverTimestamp()
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+                    return {
+                        previousXP:
+                            currentXP,
+
+                        addedXP:
+                            result.finalXP,
+
+                        totalXP:
+                            newTotalXP,
+
+                        level:
+                            newLevelData.level,
+
+                        levelXP:
+                            newLevelData
+                                .xpInCurrentLevel,
+
+                        reward:
+                            result.reward
+                    };
+                }
             );
-
-        batch.set(
-            logRef,
-            {
-                studentId: "kiamaher",
-                ...latestReport,
-                createdAt:
-                    serverTimestamp()
-            }
-        );
-
-        batch.set(
-            studentRef,
-            {
-                xp:
-                    increment(result.finalXP),
-
-                moneyBalance:
-                    increment(result.reward),
-
-                totalEarnedMoney:
-                    increment(result.reward),
-
-                totalPerformances:
-                    increment(1),
-
-                latestReport,
-
-                musicStatus:
-                    "🎉 Congratulations! Your performance has been approved.",
-
-                updatedAt:
-                    serverTimestamp()
-            },
-            {
-                merge: true
-            }
-        );
-
-        await batch.commit();
 
         const xpBox =
             getElement("final-xp");
@@ -586,7 +797,7 @@ async function savePerformance() {
 
         if (xpBox) {
             xpBox.textContent =
-                result.finalXP;
+                result.finalXP.toLocaleString();
         }
 
         if (rewardBox) {
@@ -595,17 +806,21 @@ async function savePerformance() {
         }
 
         setParentMessage(
-            `Saved successfully: +${result.finalXP} XP and ${result.reward.toLocaleString()} تومان`,
+            `Saved: +${savedResult.addedXP.toLocaleString()} XP | Total: ${savedResult.totalXP.toLocaleString()} XP | Level ${savedResult.level}`,
             "success"
         );
 
         alert(
-            `Performance saved successfully!\n+${result.finalXP} XP`
+            `Performance saved successfully!\n\n` +
+            `Added XP: ${savedResult.addedXP.toLocaleString()}\n` +
+            `Total XP: ${savedResult.totalXP.toLocaleString()}\n` +
+            `Level: ${savedResult.level}\n` +
+            `Level progress: ${savedResult.levelXP} / ${XP_PER_LEVEL} XP`
         );
 
         console.log(
             "Performance saved:",
-            latestReport
+            savedResult
         );
     } catch (error) {
         console.error(
@@ -632,7 +847,97 @@ async function savePerformance() {
 
 
 // ========================================
-// Parent login and page buttons
+// Compatibility: Manual XP Approval
+// ========================================
+
+window.approveScore =
+async function approveScore(points) {
+    const addedXP = Math.max(
+        0,
+        Number(points) || 0
+    );
+
+    try {
+        const result =
+            await runTransaction(
+                db,
+
+                async function (transaction) {
+                    const snapshot =
+                        await transaction.get(
+                            studentRef
+                        );
+
+                    if (!snapshot.exists()) {
+                        throw new Error(
+                            "Student profile does not exist."
+                        );
+                    }
+
+                    const student =
+                        snapshot.data();
+
+                    const currentXP =
+                        Math.max(
+                            0,
+                            Number(student.xp) || 0
+                        );
+
+                    const newTotalXP =
+                        currentXP + addedXP;
+
+                    const levelData =
+                        calculateLevelData(
+                            newTotalXP
+                        );
+
+                    transaction.set(
+                        studentRef,
+                        {
+                            xp:
+                                newTotalXP,
+
+                            level:
+                                levelData.level,
+
+                            musicStatus:
+                                "🎉 Congratulations! Your performance has been approved.",
+
+                            updatedAt:
+                                serverTimestamp()
+                        },
+                        {
+                            merge: true
+                        }
+                    );
+
+                    return {
+                        totalXP:
+                            newTotalXP,
+
+                        level:
+                            levelData.level
+                    };
+                }
+            );
+
+        alert(
+            `Approved +${addedXP} XP\n` +
+            `Total XP: ${result.totalXP}\n` +
+            `Level: ${result.level}`
+        );
+    } catch (error) {
+        console.error(error);
+
+        alert(
+            `Approval failed:\n${error.message}`
+        );
+    }
+};
+
+
+// ========================================
+// Parent Panel
 // ========================================
 
 function initializeParentPanel() {
@@ -665,7 +970,8 @@ function initializeParentPanel() {
             "click",
             function () {
                 if (
-                    passwordInput?.value === "1234"
+                    passwordInput?.value ===
+                    "1234"
                 ) {
                     if (loginCard) {
                         loginCard.style.display =
@@ -741,10 +1047,13 @@ function initializeParentPanel() {
     console.log(
         "Parent controls initialized:",
         {
-            loginButton: Boolean(loginButton),
-            calculateButton:
+            login:
+                Boolean(loginButton),
+
+            calculate:
                 Boolean(calculateButton),
-            saveButton:
+
+            save:
                 Boolean(saveButton)
         }
     );
@@ -752,17 +1061,34 @@ function initializeParentPanel() {
 
 
 // ========================================
-// Start app after HTML is ready
+// Start Application
 // ========================================
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-        startStudentListener();
-        initializeParentPanel();
+let applicationStarted = false;
 
-        console.log(
-            "app.js loaded successfully."
-        );
+function startApplication() {
+    if (applicationStarted) {
+        return;
     }
-);
+
+    applicationStarted = true;
+
+    startStudentListener();
+    initializeParentPanel();
+
+    console.log(
+        "app.js loaded successfully."
+    );
+}
+
+
+if (
+    document.readyState === "loading"
+) {
+    document.addEventListener(
+        "DOMContentLoaded",
+        startApplication
+    );
+} else {
+    startApplication();
+}
