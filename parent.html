@@ -2,7 +2,6 @@
 
 <html>
 
-
 <head>
 
 <title>
@@ -11,7 +10,6 @@ Parent Panel
 
 
 <link rel="stylesheet" href="style.css">
-
 
 </head>
 
@@ -23,24 +21,27 @@ Parent Panel
 
 
 <h1>
-🔐 پنل مادر
+🔐 Parent Panel
 </h1>
+
 
 
 <div class="card">
 
 
 <h3>
-رمز ورود
+Enter Password
 </h3>
 
 
-<input id="password"
-type="password">
+<input 
+id="password"
+type="password"
+>
 
 
 <button onclick="login()">
-ورود
+Login
 </button>
 
 
@@ -48,23 +49,25 @@ type="password">
 
 
 
-<div id="panel"
+
+
+<div 
+id="panel"
 class="card"
-style="display:none;">
+style="display:none;"
+>
 
 
 
 <h2>
-🎧 بررسی اجرای آرین
+🎹 Review Kiamahr's Performance
 </h2>
 
 
 
-<button onclick="
-changeStatus('🎧 در حال شنیدن اجرای شما...')
-">
+<button onclick="startListening()">
 
-در حال شنیدن
+🎧 Listening
 
 </button>
 
@@ -73,24 +76,20 @@ changeStatus('🎧 در حال شنیدن اجرای شما...')
 
 
 
-<button onclick="
-changeStatus('🔍 در حال بررسی ریتم و دقت اجرا...')
-">
+<button onclick="reviewing()">
 
-در حال بررسی
+🔍 Reviewing
 
 </button>
-
 
 
 <br><br>
 
 
-<button onclick="
-approveScore(50)
-">
 
-🎉 تایید موسیقی +50 XP
+<button onclick="approve()">
+
+🎉 Approve Performance +50 XP
 
 </button>
 
@@ -103,7 +102,9 @@ approveScore(50)
 
 
 
-<script src="app.js"></script>
+
+
+<script src="./app.js"></script>
 
 
 
@@ -113,39 +114,72 @@ approveScore(50)
 function login(){
 
 
-let pass =
-document.getElementById(
-"password"
-).value;
+let password =
+document.getElementById("password").value;
 
 
 
-if(pass==="1234"){
+if(password === "1234"){
 
 
-document.getElementById(
-"panel"
-).style.display="block";
+document.getElementById("panel")
+.style.display="block";
 
 
 }
 
 else{
 
-
-alert("رمز اشتباه است");
-
+alert("Wrong password");
 
 }
 
 
 }
+
+
+
+
+
+function startListening(){
+
+
+changeStatus(
+"🎧 Listening to your performance..."
+);
+
+
+}
+
+
+
+function reviewing(){
+
+
+changeStatus(
+"🔍 Reviewing rhythm and accuracy..."
+);
+
+
+}
+
+
+
+
+function approve(){
+
+
+approveScore(50);
+
+
+}
+
 
 
 </script>
 
 
-</body>
 
+</body>
 
 </html>
