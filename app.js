@@ -17,24 +17,185 @@ const studentRef = doc(
 
 
 
+
+// ==============================
+// Status Animation Controller
+// ==============================
+
+
+function updateStatusAnimation(statusText){
+
+
+    const statusBox =
+    document.getElementById(
+        "status-box"
+    );
+
+
+    const statusIcon =
+    document.getElementById(
+        "status-icon"
+    );
+
+
+    if(!statusBox || !statusIcon){
+
+        return;
+
+    }
+
+
+
+    statusBox.classList.remove(
+        "status-connecting",
+        "status-listening",
+        "status-reviewing",
+        "status-approved"
+    );
+
+
+    statusIcon.classList.remove(
+        "status-connecting-icon",
+        "status-listening-icon",
+        "status-reviewing-icon",
+        "status-approved-icon"
+    );
+
+
+
+    const text =
+    String(statusText || "")
+    .toLowerCase();
+
+
+
+
+    if(
+        text.includes("listening")
+    ){
+
+        statusBox.classList.add(
+            "status-listening"
+        );
+
+
+        statusIcon.classList.add(
+            "status-listening-icon"
+        );
+
+
+        statusIcon.textContent =
+        "🎧";
+
+
+    }
+
+
+
+    else if(
+        text.includes("review")
+        ||
+        text.includes("accuracy")
+    ){
+
+
+        statusBox.classList.add(
+            "status-reviewing"
+        );
+
+
+        statusIcon.classList.add(
+            "status-reviewing-icon"
+        );
+
+
+        statusIcon.textContent =
+        "🔍";
+
+
+    }
+
+
+
+
+    else if(
+        text.includes("approved")
+        ||
+        text.includes("congratulations")
+    ){
+
+
+        statusBox.classList.add(
+            "status-approved"
+        );
+
+
+        statusIcon.classList.add(
+            "status-approved-icon"
+        );
+
+
+        statusIcon.textContent =
+        "🏆";
+
+
+    }
+
+
+
+
+    else{
+
+
+        statusBox.classList.add(
+            "status-connecting"
+        );
+
+
+        statusIcon.classList.add(
+            "status-connecting-icon"
+        );
+
+
+        statusIcon.textContent =
+        "♪";
+
+
+    }
+
+}
+
+
+
+
+
+
+
 // ==============================
 // Firebase Listener
 // ==============================
 
 
 onSnapshot(
+
     studentRef,
+
 
     function(snapshot){
 
+
         if(!snapshot.exists()){
+
 
             console.error(
                 "Student document does not exist."
             );
 
+
             return;
+
         }
+
 
 
         const student =
@@ -42,30 +203,62 @@ onSnapshot(
 
 
 
+
         const statusBox =
-        document.getElementById("status");
+        document.getElementById(
+            "status"
+        );
+
 
 
         const scoreBox =
-        document.getElementById("score");
+        document.getElementById(
+            "score"
+        );
+
 
 
         const levelBox =
-        document.getElementById("level");
+        document.getElementById(
+            "level"
+        );
+
 
 
         const progressBar =
-        document.getElementById("progress");
+        document.getElementById(
+            "progress"
+        );
+
+
+
+
+
+        const currentStatus =
+        student.musicStatus ||
+        "🎹 Waiting for your performance...";
+
 
 
 
         if(statusBox){
 
+
             statusBox.textContent =
-            student.musicStatus ||
-            "🎹 Waiting for your performance...";
+            currentStatus;
+
 
         }
+
+
+
+
+        updateStatusAnimation(
+            currentStatus
+        );
+
+
+
 
 
 
@@ -73,34 +266,48 @@ onSnapshot(
         Number(student.xp) || 0;
 
 
+
         const level =
         Number(student.level) || 1;
 
 
 
+
         if(scoreBox){
+
 
             scoreBox.textContent =
             xp + " XP";
 
+
         }
+
 
 
 
         if(levelBox){
 
+
             levelBox.textContent =
             "⭐ Level " + level;
+
 
         }
 
 
 
+
+
         if(progressBar){
 
+
             progressBar.style.width =
-            Math.min((xp / 500) * 100,100)
+            Math.min(
+                (xp / 500) * 100,
+                100
+            )
             + "%";
+
 
         }
 
@@ -115,7 +322,10 @@ onSnapshot(
     },
 
 
+
     function(error){
+
+
 
         console.error(
             "Firebase listener error:",
@@ -123,21 +333,33 @@ onSnapshot(
         );
 
 
+
         const statusBox =
-        document.getElementById("status");
+        document.getElementById(
+            "status"
+        );
+
 
 
         if(statusBox){
+
 
             statusBox.textContent =
             "Firebase error: "
             + error.message;
 
+
         }
+
 
     }
 
+
 );
+
+
+
+
 
 
 
@@ -148,7 +370,8 @@ onSnapshot(
 // ==============================
 
 
-window.changeStatus = 
+window.changeStatus =
+
 async function(newStatus){
 
 
@@ -159,14 +382,18 @@ async function(newStatus){
 
             studentRef,
 
+
             {
 
                 musicStatus:newStatus,
 
+
                 updatedAt:
                 serverTimestamp()
 
+
             },
+
 
             {
 
@@ -177,14 +404,18 @@ async function(newStatus){
         );
 
 
-        alert(
-            "Performance status updated."
+
+        console.log(
+            "Status updated"
         );
 
 
     }
 
+
+
     catch(error){
+
 
 
         console.error(
@@ -192,13 +423,19 @@ async function(newStatus){
         );
 
 
+
         alert(
             error.message
         );
 
+
     }
 
+
 };
+
+
+
 
 
 
@@ -211,7 +448,9 @@ async function(newStatus){
 
 
 window.approveScore =
+
 async function(points){
+
 
 
     try{
@@ -221,10 +460,13 @@ async function(points){
 
             studentRef,
 
+
             {
+
 
                 musicStatus:
                 "🎉 Congratulations! Your performance has been approved.",
+
 
 
                 xp:
@@ -233,10 +475,14 @@ async function(points){
                 ),
 
 
+
                 updatedAt:
                 serverTimestamp()
 
+
+
             },
+
 
             {
 
@@ -247,20 +493,26 @@ async function(points){
         );
 
 
+
         alert(
-            "Approved +" + points + " XP"
+            "Approved +" +
+            points +
+            " XP"
         );
 
 
     }
 
 
+
     catch(error){
+
 
 
         console.error(
             error
         );
+
 
 
         alert(
@@ -271,7 +523,11 @@ async function(points){
     }
 
 
+
 };
+
+
+
 
 
 
@@ -290,18 +546,25 @@ function getSelectValue(id){
     document.getElementById(id);
 
 
+
     if(element){
+
 
         return Number(
             element.value
         );
+
 
     }
 
 
     return 0;
 
+
 }
+
+
+
 
 
 
@@ -331,11 +594,17 @@ function calculateXP(){
     );
 
 
+
     if(difficulty === 0){
+
 
         difficulty = 1;
 
+
     }
+
+
+
 
 
 
@@ -360,6 +629,10 @@ function calculateXP(){
 
 
 
+
+
+
+
     let bonuses = 0;
 
 
@@ -372,8 +645,10 @@ function calculateXP(){
 
         function(item){
 
+
             bonuses +=
             Number(item.value);
+
 
         }
 
@@ -383,7 +658,9 @@ function calculateXP(){
 
 
 
+
     let finalXP =
+
 
     (
 
@@ -399,6 +676,7 @@ function calculateXP(){
 
         expression
 
+
     )
 
     *
@@ -408,8 +686,12 @@ function calculateXP(){
 
 
 
+
     finalXP =
-    Math.round(finalXP);
+    Math.round(
+        finalXP
+    );
+
 
 
 
@@ -420,6 +702,7 @@ function calculateXP(){
     );
 
 
+
     const moneyBox =
     document.getElementById(
         "reward"
@@ -427,28 +710,40 @@ function calculateXP(){
 
 
 
+
+
     if(xpBox){
+
 
         xpBox.innerText =
         finalXP;
 
+
     }
+
+
 
 
 
     if(moneyBox){
 
+
         moneyBox.innerText =
         finalXP * 100;
 
+
     }
+
 
 
 
 
     return finalXP;
 
+
 }
+
+
 
 
 
@@ -462,7 +757,10 @@ document.getElementById(
 
 
 
+
+
 if(calculateButton){
+
 
 
     calculateButton.addEventListener(
