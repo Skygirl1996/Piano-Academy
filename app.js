@@ -1,81 +1,75 @@
-// دریافت وضعیت ذخیره شده
+let score = Number(localStorage.getItem("score")) || 0;
 
-let status =
-localStorage.getItem("musicStatus")
-|| "هنوز اجرا ثبت نشده";
-
-
-let score =
-localStorage.getItem("score")
-|| 0;
+let musicStatus = 
+localStorage.getItem("musicStatus") 
+|| "No performance submitted yet";
 
 
 
-function updateChildPage(){
+function updateChildPage() {
 
 
-let statusBox =
-document.getElementById("status");
+    let statusBox = document.getElementById("status");
+
+    if(statusBox){
+        statusBox.innerHTML = musicStatus;
+    }
 
 
-if(statusBox){
 
-statusBox.innerHTML=status;
+    let scoreBox = document.getElementById("score");
 
-}
-
-
-let scoreBox =
-document.getElementById("score");
-
-
-if(scoreBox){
-
-scoreBox.innerHTML=score+" XP";
+    if(scoreBox){
+        scoreBox.innerHTML = score + " XP";
+    }
 
 }
 
 
+
+
+function changeStatus(newStatus){
+
+    musicStatus = newStatus;
+
+
+    localStorage.setItem(
+        "musicStatus",
+        musicStatus
+    );
+
+
+    updateChildPage();
+
 }
+
+
 
 
 
 function approveScore(points){
 
 
-score =
-Number(score)+Number(points);
+    score += Number(points);
 
 
-localStorage.setItem(
-"score",
-score
-);
+    localStorage.setItem(
+        "score",
+        score
+    );
 
 
-localStorage.setItem(
-"musicStatus",
-"🎉 تبریک می‌گویم! موسیقی شما تایید شد."
-);
+    musicStatus =
+    "🎉 Congratulations! Your music has been approved.";
 
 
-updateChildPage();
+    localStorage.setItem(
+        "musicStatus",
+        musicStatus
+    );
 
 
-}
-
-
-
-function changeStatus(newStatus){
-
-
-localStorage.setItem(
-"musicStatus",
-newStatus
-);
-
-
-updateChildPage();
+    updateChildPage();
 
 
 }
@@ -83,8 +77,8 @@ updateChildPage();
 
 
 
-window.onload=function(){
+window.onload = function(){
 
-updateChildPage();
+    updateChildPage();
 
-}
+};
