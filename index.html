@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,68 +12,98 @@
 
     <title>Online Piano Academy</title>
 
-   <link
-rel="stylesheet"
-href="./academy-style.css?v=1"
->
+    <link
+        rel="stylesheet"
+        href="./academy-style.css?v=100"
+    >
+
 </head>
 
 
 <body class="academy-page">
 
+
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
     <div class="bg-orb orb-3"></div>
+
 
     <div class="floating-notes note-1">♪</div>
     <div class="floating-notes note-2">♫</div>
     <div class="floating-notes note-3">♬</div>
     <div class="floating-notes note-4">♪</div>
 
+
     <main class="container academy-container">
 
+
+        <!-- Academy Header -->
+
         <header class="academy-hero glass-card">
+
             <div class="hero-left">
-                <div class="hero-logo">🎹</div>
+
+                <div class="hero-logo">
+                    🎹
+                </div>
 
                 <div>
+
                     <p class="eyebrow">
                         Professional Music Journey
                     </p>
 
-                    <h1>Online Piano Academy</h1>
+                    <h1>
+                        Online Piano Academy
+                    </h1>
 
                     <p class="hero-subtitle">
                         A premium piano learning experience
                         for Kiamahr
                     </p>
+
                 </div>
+
             </div>
 
+
             <div class="hero-right">
+
                 <div class="hero-pill">
                     Young Pianist
                 </div>
+
             </div>
+
         </header>
 
 
+
+        <!-- Student Information -->
+
         <section class="student-card glass-card">
+
             <div class="student-avatar">
                 🎼
             </div>
 
+
             <div class="student-info">
+
                 <p class="mini-label">
                     Student
                 </p>
 
-                <h2>Kiamahr</h2>
+                <h2>
+                    Kiamahr
+                </h2>
 
                 <p>
                     Keep practicing and enjoy the journey
                 </p>
+
             </div>
+
 
             <div
                 id="level"
@@ -80,15 +111,24 @@ href="./academy-style.css?v=1"
             >
                 ⭐ Level 1
             </div>
+
         </section>
 
 
+
+        <!-- XP and Level Progress -->
+
         <section class="dashboard-grid">
 
+
             <div class="glass-card stat-card">
-                <div class="stat-icon">🏆</div>
+
+                <div class="stat-icon">
+                    🏆
+                </div>
 
                 <div>
+
                     <p class="mini-label">
                         Experience Points
                     </p>
@@ -96,35 +136,62 @@ href="./academy-style.css?v=1"
                     <h3 id="score">
                         0 XP
                     </h3>
+
                 </div>
+
             </div>
 
 
-            <div class="glass-card stat-card">
-                <div class="stat-icon">📈</div>
 
-                <div>
+            <div class="glass-card stat-card">
+
+                <div class="stat-icon">
+                    📈
+                </div>
+
+                <div class="progress-information">
+
                     <p class="mini-label">
-                        Progress to Next Stage
+                        Progress to Next Level
                     </p>
 
                     <div class="progress-shell">
+
                         <div
                             id="progress"
                             class="progress-bar"
+                            role="progressbar"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            aria-valuenow="0"
                         ></div>
+
                     </div>
+
+                    <p
+                        id="progress-text"
+                        class="progress-text"
+                    >
+                        0 / 500 XP
+                    </p>
+
                 </div>
+
             </div>
 
         </section>
 
 
+
+        <!-- Live Evaluation Status -->
+
         <section
             id="status-box"
             class="glass-card performance-card status-connecting"
         >
+
             <div class="section-head">
+
                 <div
                     id="status-icon"
                     class="status-icon status-connecting-icon"
@@ -133,13 +200,19 @@ href="./academy-style.css?v=1"
                 </div>
 
                 <div>
+
                     <p class="mini-label">
                         Today's Performance
                     </p>
 
-                    <h2>Live Evaluation Status</h2>
+                    <h2>
+                        Live Evaluation Status
+                    </h2>
+
                 </div>
+
             </div>
+
 
             <p
                 id="status"
@@ -147,151 +220,259 @@ href="./academy-style.css?v=1"
             >
                 Connecting to the academy...
             </p>
+
         </section>
 
-        <section class="glass-card report-card">
 
 
-<div class="report-header">
+        <!-- Dynamic Performance Report -->
 
-<h2>
-🎹 Performance Report
-</h2>
+        <section
+            class="glass-card report-card"
+            id="report-card"
+        >
 
-<p>
-Your latest piano achievement
-</p>
+            <div class="report-header">
 
-</div>
+                <div>
 
+                    <h2>
+                        🎹 Performance Report
+                    </h2>
 
+                    <p>
+                        Your latest piano achievement
+                    </p>
 
+                </div>
 
-<div class="report-item">
-
-<strong>
-🎵 Song
-</strong>
-
-<span>
-Fur Elise
-</span>
-
-</div>
+            </div>
 
 
 
-<div class="report-item">
-
-<strong>
-⭐ Performance Quality
-</strong>
-
-<span>
-Excellent Performance
-+50 XP
-</span>
-
-</div>
+            <div
+                id="report-empty"
+                class="report-empty"
+            >
+                No performance has been saved yet.
+            </div>
 
 
 
-
-<div class="report-item">
-
-<strong>
-🔁 Practice Consistency
-</strong>
-
-<span>
-Low Repetition
-+50 XP
-</span>
-
-</div>
+            <div
+                id="report-content"
+                hidden
+            >
 
 
+                <div
+                    class="report-item"
+                    id="report-song-row"
+                >
 
+                    <span>
+                        🎵 Song
+                    </span>
 
-<div class="report-item">
+                    <strong id="report-song">
+                        —
+                    </strong>
 
-<strong>
-🚀 Difficulty Challenge
-</strong>
-
-<span>
-Hard Level
-×2 Bonus
-</span>
-
-</div>
+                </div>
 
 
 
+                <div
+                    class="report-item"
+                    id="report-performance-row"
+                >
 
-<div class="report-item">
+                    <span>
+                        ⭐ Performance Quality
+                    </span>
 
-<strong>
-🏆 Achievement
-</strong>
+                    <strong id="report-performance">
+                        —
+                    </strong>
 
-<span>
-New Song Learned
-+100 XP
-</span>
-
-</div>
-
-
-
-
-<div class="report-total">
-
-
-<h3>
-Total Earned
-</h3>
-
-
-<h2>
-440 XP ⭐
-</h2>
-
-
-<p>
-Reward:
-44,000 تومان
-</p>
-
-
-</div>
+                </div>
 
 
 
-</section>
+                <div
+                    class="report-item"
+                    id="report-repetition-row"
+                >
 
+                    <span>
+                        🔁 Practice Consistency
+                    </span>
+
+                    <strong id="report-repetition">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div
+                    class="report-item"
+                    id="report-difficulty-row"
+                >
+
+                    <span>
+                        🚀 Difficulty Challenge
+                    </span>
+
+                    <strong id="report-difficulty">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div
+                    class="report-item"
+                    id="report-bonus-row"
+                >
+
+                    <span>
+                        🏆 Achievement
+                    </span>
+
+                    <strong id="report-bonus">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div
+                    class="report-item"
+                    id="report-rhythm-row"
+                >
+
+                    <span>
+                        🥁 Rhythm
+                    </span>
+
+                    <strong id="report-rhythm">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div
+                    class="report-item"
+                    id="report-notes-row"
+                >
+
+                    <span>
+                        🎼 Notes
+                    </span>
+
+                    <strong id="report-notes">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div
+                    class="report-item"
+                    id="report-expression-row"
+                >
+
+                    <span>
+                        🎭 Expression
+                    </span>
+
+                    <strong id="report-expression">
+                        —
+                    </strong>
+
+                </div>
+
+
+
+                <div class="report-total">
+
+                    <span>
+                        Total Earned
+                    </span>
+
+                    <strong>
+
+                        <span id="report-total-xp">
+                            0
+                        </span>
+
+                        XP ⭐
+
+                    </strong>
+
+                    <small>
+
+                        Reward:
+
+                        <span id="report-reward">
+                            0
+                        </span>
+
+                        تومان
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- Teacher Message -->
 
         <section class="glass-card teacher-card">
-            <div class="teacher-badge">🌟</div>
+
+            <div class="teacher-badge">
+                🌟
+            </div>
 
             <div>
+
                 <p class="mini-label">
                     Teacher's Message
                 </p>
 
-                <h2>Keep Going</h2>
+                <h2>
+                    Keep Going
+                </h2>
 
                 <p>
                     Every beautiful performance begins
                     with patient practice, focused listening,
                     and confidence in every note.
                 </p>
+
             </div>
+
         </section>
 
 
+
+        <!-- Piano Decoration -->
+
         <section class="piano-strip glass-card">
+
             <div class="piano-keys">
+
                 <span class="white"></span>
                 <span class="black b1"></span>
 
@@ -310,16 +491,20 @@ Reward:
                 <span class="black b5"></span>
 
                 <span class="white"></span>
+
             </div>
+
         </section>
+
 
     </main>
 
 
     <script
         type="module"
-        src="./app.js?v=31"
+        src="./app.js?v=100"
     ></script>
+
 
 </body>
 
