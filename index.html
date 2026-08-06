@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -14,43 +13,65 @@
 
     <link
         rel="stylesheet"
-        href="./style.css?v=6"
+        href="./style.css?v=30"
     >
 </head>
 
 
-<body>
+<body class="academy-page">
 
-    <div class="music-notes">
-        ♪ ♫ ♬ ♪ ♫
-    </div>
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
 
+    <div class="floating-notes note-1">♪</div>
+    <div class="floating-notes note-2">♫</div>
+    <div class="floating-notes note-3">♬</div>
+    <div class="floating-notes note-4">♪</div>
 
-    <main class="container">
+    <main class="container academy-container">
 
-        <header class="academy-header">
-            <div class="piano-icon">🎹</div>
+        <header class="academy-hero glass-card">
+            <div class="hero-left">
+                <div class="hero-logo">🎹</div>
 
-            <h1>Online Piano Academy</h1>
+                <div>
+                    <p class="eyebrow">
+                        Professional Music Journey
+                    </p>
 
-            <p>Your musical adventure starts here!</p>
+                    <h1>Online Piano Academy</h1>
+
+                    <p class="hero-subtitle">
+                        A premium piano learning experience
+                        for Kiamahr
+                    </p>
+                </div>
+            </div>
+
+            <div class="hero-right">
+                <div class="hero-pill">
+                    Young Pianist
+                </div>
+            </div>
         </header>
 
 
-        <section class="card profile-card">
-
-            <div class="avatar">
+        <section class="student-card glass-card">
+            <div class="student-avatar">
                 🎼
             </div>
 
-            <div>
-                <p class="welcome-text">
-                    Welcome back,
+            <div class="student-info">
+                <p class="mini-label">
+                    Student
                 </p>
 
                 <h2>Kiamahr</h2>
 
-                <p>Young Pianist</p>
+                <p>
+                    Keep practicing and enjoy the journey
+                </p>
             </div>
 
             <div
@@ -59,93 +80,125 @@
             >
                 ⭐ Level 1
             </div>
-
         </section>
 
 
-        <section class="card performance-card">
+        <section class="dashboard-grid">
 
-            <div class="section-heading">
-                <span>🎧</span>
+            <div class="glass-card stat-card">
+                <div class="stat-icon">🏆</div>
 
                 <div>
-                    <h2>Today's Performance</h2>
+                    <p class="mini-label">
+                        Experience Points
+                    </p>
 
-                    <p>Live evaluation status</p>
+                    <h3 id="score">
+                        0 XP
+                    </h3>
                 </div>
             </div>
 
 
-            <div class="status-box">
+            <div class="glass-card stat-card">
+                <div class="stat-icon">📈</div>
 
-                <div class="status-animation">
+                <div>
+                    <p class="mini-label">
+                        Progress to Next Stage
+                    </p>
+
+                    <div class="progress-shell">
+                        <div
+                            id="progress"
+                            class="progress-bar"
+                        ></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <section
+            id="status-box"
+            class="glass-card performance-card status-connecting"
+        >
+            <div class="section-head">
+                <div
+                    id="status-icon"
+                    class="status-icon status-connecting-icon"
+                >
                     ♪
                 </div>
 
-                <p id="status">
-                    Connecting to the academy...
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <section class="card progress-card">
-
-            <div class="section-heading">
-                <span>🏆</span>
-
                 <div>
-                    <h2>My Progress</h2>
+                    <p class="mini-label">
+                        Today's Performance
+                    </p>
 
-                    <p>Keep playing to reach the next level</p>
+                    <h2>Live Evaluation Status</h2>
                 </div>
             </div>
 
-
-            <div class="xp-row">
-                <span>Experience Points</span>
-
-                <strong id="score">
-                    0 XP
-                </strong>
-            </div>
-
-
-            <div class="progress">
-                <div
-                    id="progress"
-                    class="progress-bar"
-                ></div>
-            </div>
-
+            <p
+                id="status"
+                class="status-text"
+            >
+                Connecting to the academy...
+            </p>
         </section>
 
 
-        <section class="card teacher-card">
+        <section class="glass-card teacher-card">
+            <div class="teacher-badge">🌟</div>
 
-            <div class="teacher-icon">
-                🌟
+            <div>
+                <p class="mini-label">
+                    Teacher's Message
+                </p>
+
+                <h2>Keep Going</h2>
+
+                <p>
+                    Every beautiful performance begins
+                    with patient practice, focused listening,
+                    and confidence in every note.
+                </p>
             </div>
+        </section>
 
-            <h2>Teacher's Message</h2>
 
-            <p>
-                Every great pianist starts with one note.
-                Keep practicing, believe in yourself,
-                and enjoy every melody!
-            </p>
+        <section class="piano-strip glass-card">
+            <div class="piano-keys">
+                <span class="white"></span>
+                <span class="black b1"></span>
 
+                <span class="white"></span>
+                <span class="black b2"></span>
+
+                <span class="white"></span>
+
+                <span class="white"></span>
+                <span class="black b3"></span>
+
+                <span class="white"></span>
+                <span class="black b4"></span>
+
+                <span class="white"></span>
+                <span class="black b5"></span>
+
+                <span class="white"></span>
+            </div>
         </section>
 
     </main>
 
 
     <script
-    type="module"
-    src="./app.js?v=10"
-></script>
+        type="module"
+        src="./app.js?v=30"
+    ></script>
 
 </body>
 
