@@ -510,117 +510,29 @@ label{
     }
 }
 
+/* ========================================
+   Dynamic Performance Report
+======================================== */
 
-.report-card{
-
-padding:26px;
-
+.report-card {
+    padding: 26px;
 }
 
-
-.report-header{
-
-margin-bottom:20px;
-
+.report-header {
+    margin-bottom: 20px;
 }
 
-
-.report-header p{
-
-opacity:.75;
-
-margin-top:8px;
-
+.report-header h2 {
+    margin: 0;
 }
 
-
-
-.report-item{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:center;
-
-padding:14px 16px;
-
-margin:10px 0;
-
-background:
-rgba(255,255,255,.10);
-
-border-radius:16px;
-
-border:1px solid rgba(255,255,255,.15);
-
+.report-header p {
+    margin-top: 8px;
+    opacity: 0.75;
 }
-
-
-.report-item strong{
-
-font-size:16px;
-
-}
-
-
-.report-item span{
-
-font-weight:700;
-
-text-align:right;
-
-}
-
-
-
-
-.report-total{
-
-margin-top:20px;
-
-padding:22px;
-
-text-align:center;
-
-border-radius:22px;
-
-
-background:
-
-linear-gradient(
-135deg,
-rgba(251,191,36,.35),
-rgba(245,158,11,.15)
-);
-
-
-border:1px solid rgba(251,191,36,.4);
-
-}
-
-
-
-.report-total h2{
-
-font-size:34px;
-
-margin:10px 0;
-
-}
-
-
-.report-total p{
-
-font-size:18px;
-
-font-weight:700;
-
-}
-
 
 .report-empty {
-    padding: 35px 20px;
+    padding: 34px 20px;
     text-align: center;
     color: rgba(255, 255, 255, 0.75);
     background: rgba(255, 255, 255, 0.07);
@@ -632,20 +544,123 @@ font-weight:700;
     display: none !important;
 }
 
-.report-item strong {
-    text-align: right;
-    max-width: 65%;
+.report-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 16px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
 }
 
+.report-item > span {
+    font-weight: 700;
+    text-align: left;
+}
+
+.report-item > strong {
+    max-width: 65%;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.report-total {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 11px;
+    margin-top: 22px;
+    padding: 30px 24px;
+    text-align: center;
+    border: 1px solid rgba(251, 191, 36, 0.55);
+    border-radius: 22px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(251, 191, 36, 0.40),
+            rgba(245, 158, 11, 0.17)
+        );
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        0 12px 30px rgba(245, 158, 11, 0.12);
+}
+
+.report-total > span {
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    opacity: 0.95;
+}
+
+.report-total > strong {
+    font-size: 44px;
+    line-height: 1.15;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+}
+
+.report-total > small {
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 800;
+}
+
+/* ========================================
+   Level Progress Text
+======================================== */
+
+.progress-information {
+    width: 100%;
+}
+
+.progress-text {
+    margin-top: 9px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    opacity: 0.8;
+}
+
+/* ========================================
+   Mobile Report
+======================================== */
+
 @media (max-width: 600px) {
+    .report-card {
+        padding: 18px;
+    }
+
     .report-item {
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
         gap: 7px;
     }
 
-    .report-item strong {
+    .report-item > strong {
         max-width: 100%;
         text-align: left;
+    }
+
+    .report-total {
+        padding: 24px 16px;
+    }
+
+    .report-total > span {
+        font-size: 19px;
+    }
+
+    .report-total > strong {
+        font-size: 36px;
+    }
+
+    .report-total > small {
+        font-size: 17px;
     }
 }
