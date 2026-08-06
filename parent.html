@@ -3,528 +3,424 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Online Piano Academy | Parent Panel</title>
+    <title>
+        Online Piano Academy | Parent Panel
+    </title>
 
-<link
-rel="stylesheet"
-href="./parent-style.css?v=1"
->
+    <link
+        rel="stylesheet"
+        href="./parent-style.css?v=100"
+    >
 
 </head>
 
 
-<body>
+<body class="parent-page">
 
 
-<main class="container">
+    <main class="container">
 
 
-<header class="academy-header">
+        <!-- Parent Panel Header -->
 
-<div class="piano-icon">
-🎹
-</div>
+        <header class="academy-header">
 
+            <div class="piano-icon">
+                🎹
+            </div>
 
-<h1>
-Online Piano Academy
-</h1>
+            <h1>
+                Online Piano Academy
+            </h1>
 
+            <p>
+                Parent Performance Evaluation
+            </p>
 
-<p>
-Parent Performance Evaluation
-</p>
+        </header>
 
 
-</header>
 
+        <!-- Login -->
 
+        <section
+            class="card login-card"
+            id="login-card"
+        >
 
+            <h2>
+                🔐 Parent Login
+            </h2>
 
+            <input
+                id="password"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
 
-<section 
-class="card login-card"
-id="login-card"
->
+            <button
+                id="login-button"
+                type="button"
+            >
+                Unlock Panel
+            </button>
 
+        </section>
 
-<h2>
-🔐 Parent Login
-</h2>
 
 
-<input
+        <!-- Evaluation Panel -->
 
-id="password"
+        <section
+            class="card parent-panel"
+            id="parent-panel"
+            style="display: none;"
+        >
 
-type="password"
 
-placeholder="Password"
+            <h2>
+                🎼 Performance Evaluation
+            </h2>
 
->
 
 
-<button
+            <!-- Performance Status -->
 
-id="login-button"
+            <h3>
+                🎧 Performance Status
+            </h3>
 
-type="button"
+            <div class="button-group">
 
->
+                <button
+                    id="listening-button"
+                    type="button"
+                >
+                    🎧 Listening
+                </button>
 
-Unlock Panel
+                <button
+                    id="reviewing-button"
+                    type="button"
+                >
+                    🔍 Reviewing
+                </button>
 
-</button>
+            </div>
 
 
-</section>
+            <hr>
 
 
 
+            <!-- Song Name -->
 
+            <label for="song-name">
+                Song Name
+            </label>
 
+            <input
+                id="song-name"
+                type="text"
+                placeholder="Enter song name"
+                autocomplete="off"
+            >
 
 
-<section
 
-class="card"
+            <!-- Performance Quality -->
 
-id="parent-panel"
+            <h3>
+                ⭐ Performance Quality
+            </h3>
 
-style="display:none;"
+            <select id="performance">
 
->
+                <option value="0">
+                    None
+                </option>
 
+                <option value="50">
+                    Excellent Performance (+50 XP)
+                </option>
 
+                <option value="35">
+                    Good Performance (+35 XP)
+                </option>
 
-<h2>
-🎼 Performance Evaluation
-</h2>
+                <option value="20">
+                    Practice Attempt (+20 XP)
+                </option>
 
+            </select>
 
 
 
+            <!-- Repetition -->
 
-<h3>
-🎧 Performance Status
-</h3>
+            <h3>
+                🔁 Song Repetition
+            </h3>
 
+            <select id="repetition">
 
+                <option value="0">
+                    None
+                </option>
 
-<button
+                <option value="50">
+                    Low Repetition (+50 XP)
+                </option>
 
-id="listening-button"
+                <option value="25">
+                    Medium Repetition (+25 XP)
+                </option>
 
-type="button"
+                <option value="10">
+                    High Repetition (+10 XP)
+                </option>
 
->
+            </select>
 
-🎧 Listening
 
-</button>
 
+            <!-- Difficulty -->
 
+            <h3>
+                🎯 Difficulty
+            </h3>
 
+            <select id="difficulty">
 
-<button
+                <option value="1">
+                    None ×1
+                </option>
 
-id="reviewing-button"
+                <option value="1">
+                    Easy ×1
+                </option>
 
-type="button"
+                <option value="1.5">
+                    Medium ×1.5
+                </option>
 
->
+                <option value="2">
+                    Hard ×2
+                </option>
 
-🔍 Reviewing
+                <option value="3">
+                    Master ×3
+                </option>
 
-</button>
+            </select>
 
 
 
+            <!-- Bonuses -->
 
+            <h3>
+                🏆 Bonuses
+            </h3>
 
-<hr>
+            <div class="bonus-list">
 
+                <label class="bonus-option">
 
+                    <input
+                        type="checkbox"
+                        class="bonus"
+                        value="100"
+                    >
 
+                    <span>
+                        New Song Learned (+100 XP)
+                    </span>
 
+                </label>
 
-<label>
-Song Name
-</label>
 
+                <label class="bonus-option">
 
-<input
+                    <input
+                        type="checkbox"
+                        class="bonus"
+                        value="150"
+                    >
 
-id="song-name"
+                    <span>
+                        Difficult Challenge (+150 XP)
+                    </span>
 
-placeholder="Song name"
+                </label>
 
->
 
+                <label class="bonus-option">
 
+                    <input
+                        type="checkbox"
+                        class="bonus"
+                        value="50"
+                    >
 
+                    <span>
+                        Personal Record (+50 XP)
+                    </span>
 
+                </label>
 
+            </div>
 
-<h3>
-⭐ Performance Quality
-</h3>
 
 
-<select id="performance">
+            <!-- Technical Evaluation -->
 
-<option value="0">
-None
-</option>
+            <h3>
+                🎹 Technical Evaluation
+            </h3>
 
 
-<option value="50">
-Excellent Performance (+50 XP)
-</option>
+            <label for="rhythm">
+                Rhythm
+            </label>
 
+            <select id="rhythm">
 
-<option value="35">
-Good Performance (+35 XP)
-</option>
+                <option value="0">
+                    None
+                </option>
 
+                <option value="10">
+                    Perfect Rhythm (+10 XP)
+                </option>
 
-<option value="20">
-Practice Attempt (+20 XP)
-</option>
+                <option value="-5">
+                    Rhythm Problem (-5 XP)
+                </option>
 
+            </select>
 
-</select>
 
+            <label for="notes">
+                Notes
+            </label>
 
+            <select id="notes">
 
+                <option value="0">
+                    None
+                </option>
 
+                <option value="10">
+                    Accurate Notes (+10 XP)
+                </option>
 
+                <option value="-5">
+                    Wrong Notes (-5 XP)
+                </option>
 
-<h3>
-🔁 Song Repetition
-</h3>
+            </select>
 
 
-<select id="repetition">
+            <label for="expression">
+                Expression
+            </label>
 
+            <select id="expression">
 
-<option value="0">
-None
-</option>
+                <option value="0">
+                    None
+                </option>
 
+                <option value="10">
+                    Excellent Expression (+10 XP)
+                </option>
 
-<option value="50">
-Low Repetition (+50 XP)
-</option>
+                <option value="-5">
+                    Needs Expression (-5 XP)
+                </option>
 
+            </select>
 
-<option value="25">
-Medium Repetition (+25 XP)
-</option>
 
 
-<option value="10">
-High Repetition (+10 XP)
-</option>
+            <!-- Results -->
 
+            <div class="evaluation-result">
 
-</select>
+                <h2>
 
+                    Final XP:
 
+                    <span id="final-xp">
+                        0
+                    </span>
 
+                    XP
 
+                </h2>
 
 
+                <h2>
 
-<h3>
-🎯 Difficulty
-</h3>
+                    Reward:
 
+                    <span id="reward">
+                        0
+                    </span>
 
+                    تومان
 
-<select id="difficulty">
+                </h2>
 
+            </div>
 
-<option value="1">
-None ×1
-</option>
 
 
-<option value="1">
-Easy ×1
-</option>
+            <!-- Actions -->
 
+            <div class="button-group action-buttons">
 
-<option value="1.5">
-Medium ×1.5
-</option>
+                <button
+                    id="calculate-button"
+                    type="button"
+                >
+                    Calculate XP
+                </button>
 
+                <button
+                    id="save-button"
+                    type="button"
+                >
+                    Save Performance
+                </button>
 
-<option value="2">
-Hard ×2
-</option>
+            </div>
 
 
-<option value="3">
-Master ×3
-</option>
+            <p
+                id="message"
+                aria-live="polite"
+            ></p>
 
 
-</select>
+        </section>
 
 
+    </main>
 
 
-
-
-
-
-<h3>
-🏆 Bonuses
-</h3>
-
-
-
-<label>
-
-<input
-
-type="checkbox"
-
-class="bonus"
-
-value="100"
-
->
-
-New Song Learned (+100 XP)
-
-</label>
-
-
-
-<label>
-
-<input
-
-type="checkbox"
-
-class="bonus"
-
-value="150"
-
->
-
-Difficult Challenge (+150 XP)
-
-</label>
-
-
-
-
-<label>
-
-<input
-
-type="checkbox"
-
-class="bonus"
-
-value="50"
-
->
-
-Personal Record (+50 XP)
-
-</label>
-
-
-
-
-
-
-
-
-<h3>
-🎹 Technical Evaluation
-</h3>
-
-
-
-<select id="rhythm">
-
-
-<option value="0">
-None
-</option>
-
-
-<option value="10">
-Perfect Rhythm (+10 XP)
-</option>
-
-
-<option value="-5">
-Rhythm Problem (-5 XP)
-</option>
-
-
-</select>
-
-
-
-
-
-<select id="notes">
-
-
-<option value="0">
-None
-</option>
-
-
-<option value="10">
-Accurate Notes (+10 XP)
-</option>
-
-
-<option value="-5">
-Wrong Notes (-5 XP)
-</option>
-
-
-</select>
-
-
-
-
-
-
-<select id="expression">
-
-
-<option value="0">
-None
-</option>
-
-
-<option value="10">
-Excellent Expression (+10 XP)
-</option>
-
-
-<option value="-5">
-Needs Expression (-5 XP)
-</option>
-
-
-</select>
-
-
-
-
-
-
-
-
-
-<h2>
-
-Final XP:
-
-<span id="final-xp">
-
-0
-
-</span>
-
-XP
-
-</h2>
-
-
-
-
-
-<h2>
-
-Reward:
-
-<span id="reward">
-
-0
-
-</span>
-
-تومان
-
-</h2>
-
-
-
-
-
-
-<button
-
-id="calculate-button"
-
-type="button"
-
->
-
-Calculate XP
-
-</button>
-
-
-
-
-
-<button
-
-id="save-button"
-
-type="button"
-
->
-
-Save Performance
-
-</button>
-
-
-
-
-
-<p id="message"></p>
-
-
-
-</section>
-
-
-
-
-
-</main>
-
-
-
-
-
-
-
-
-<script
-    type="module"
-    src="./app.js?v=70"
-></script>
-
+    <script
+        type="module"
+        src="./app.js?v=100"
+    ></script>
 
 
 </body>
