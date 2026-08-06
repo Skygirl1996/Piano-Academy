@@ -576,7 +576,16 @@ savePerformance
 );
 
 
+document
+.getElementById("save-button")
+?.addEventListener(
+"click",
+function(){
 
+    alert("Save button clicked");
+
+}
+);
 
 
 
