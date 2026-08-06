@@ -9,338 +9,192 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
-const STUDENT_ID = "kiamaher";
-const PARENT_PASSWORD = "1234";
-
-const studentRef = doc(db, "users", STUDENT_ID);
-
-
-/* =========================
-   General helpers
-========================= */
-
-function getElement(id) {
-    return document.getElementById(id);
-}
+const studentRef = doc(
+    db,
+    "users",
+    "kiamaher"
+);
 
 
-function showAdminMessage(message, type = "success") {
-    const messageBox = getElement("admin-message");
+/* دریافت زنده اطلاعات از Firebase */
+onSnapshot(
+    studentRef,
 
-    if (!messageBox) {
-        return;
-    }
+    function (snapshot) {
+        if (!snapshot.exists()) {
+            console.error("Student document does not exist.");
 
-    messageBox.textContent = message;
-    messageBox.className = `admin-message ${type}`;
-}
-
-
-function setButtonsDisabled(disabled) {
-    const buttonIds = [
-        "listening-button",
-        "reviewing-button",
-        "approve-button"
-    ];
-
-    buttonIds.forEach((id) => {
-        const button = getElement(id);
-
-        if (button) {
-            button.disabled = disabled;
-        }
-    });
-}
-
-
-/* =========================
-   Live Firestore listener
-========================= */
-
-function startStudentListener() {
-    onSnapshot(
-        studentRef,
-
-        (snapshot) => {
-            if (!snapshot.exists()) {
-                const statusBox = getElement("status");
-
-                if (statusBox) {
-                    statusBox.textContent =
-                        "Student profile was not found.";
-                }
-
-                showAdminMessage(
-                    "Student document was not found in Firestore.",
-                    "error"
-                );
-
-                return;
-            }
-
-            const student = snapshot.data();
-
-            const status =
-                student.musicStatus ||
-                "🎹 Waiting for your performance...";
-
-            const xp = Number(student.xp) || 0;
-            const level = Number(student.level) || 1;
-
-            const statusBox = getElement("status");
-            const scoreBox = getElement("score");
-            const levelBox = getElement("level");
-            const progressBar = getElement("progress");
-
-            if (statusBox) {
-                statusBox.textContent = status;
-            }
-
-            if (scoreBox) {
-                scoreBox.textContent = `${xp} XP`;
-            }
-
-            if (levelBox) {
-                levelBox.textContent = `⭐ Level ${level}`;
-            }
-
-            if (progressBar) {
-                const progressPercent =
-                    Math.min((xp % 500) / 5, 100);
-
-                progressBar.style.width =
-                    `${progressPercent}%`;
-            }
-
-            console.log(
-                "Live Firebase data received:",
-                student
-            );
-        },
-
-        (error) => {
-            console.error(
-                "Firestore listener error:",
-                error
-            );
-
-            const statusBox = getElement("status");
+            const statusBox =
+                document.getElementById("status");
 
             if (statusBox) {
                 statusBox.textContent =
-                    "Unable to connect to Firebase.";
+                    "Student profile was not found.";
             }
 
-            showAdminMessage(
-                `Firebase read error: ${error.message}`,
-                "error"
-            );
+            return;
         }
-    );
-}
+
+        const student = snapshot.data();
+
+        const statusBox =
+            document.getElementById("status");
+
+        const scoreBox =
+            document.getElementById("score");
+
+        const levelBox =
+            document.getElementById("level");
+
+        const progressBar =
+            document.getElementById("progress");
 
 
-/* =========================
-   Firebase write functions
-========================= */
+        if (statusBox) {
+            statusBox.textContent =
+                student.musicStatus ||
+                "🎹 Waiting for your performance...";
+        }
 
-async function updatePerformanceStatus(newStatus) {
+
+        const xp = Number(student.xp) || 0;
+        const level = Number(student.level) || 1;
+
+
+        if (scoreBox) {
+            scoreBox.textContent = xp + " XP";
+        }
+
+
+        if (levelBox) {
+            levelBox.textContent =
+                "⭐ Level " + level;
+        }
+
+
+        if (progressBar) {
+            const percentage =
+                Math.min((xp / 500) * 100, 100);
+
+            progressBar.style.width =
+                percentage + "%";
+        }
+
+
+        console.log(
+            "Firebase data received:",
+            student
+        );
+    },
+
+    function (error) {
+        console.error(
+            "Firebase listener error:",
+            error
+        );
+
+        const statusBox =
+            document.getElementById("status");
+
+        if (statusBox) {
+            statusBox.textContent =
+                "Firebase connection error: " +
+                error.message;
+        }
+    }
+);
+
+
+/* تغییر وضعیت اجرا از پنل مادر */
+window.changeStatus =
+async function (newStatus) {
     try {
-        setButtonsDisabled(true);
-
-        showAdminMessage(
-            "Updating performance status...",
-            "loading"
+        console.log(
+            "Updating status:",
+            newStatus
         );
 
         await setDoc(
             studentRef,
+
             {
                 musicStatus: newStatus,
                 updatedAt: serverTimestamp()
             },
+
             {
                 merge: true
             }
         );
 
-        showAdminMessage(
-            "Performance status updated successfully.",
-            "success"
+        console.log(
+            "Status updated successfully."
+        );
+
+        alert(
+            "Performance status updated successfully."
         );
     } catch (error) {
         console.error(
-            "Firebase write error:",
+            "Status update failed:",
             error
         );
 
-        showAdminMessage(
-            `Firebase write error: ${error.message}`,
-            "error"
+        alert(
+            "Firebase error: " +
+            error.message
         );
-    } finally {
-        setButtonsDisabled(false);
     }
-}
+};
 
 
-async function approvePerformance() {
+/* تأیید اجرا و افزودن ۵۰ امتیاز */
+window.approveScore =
+async function (points) {
     try {
-        setButtonsDisabled(true);
-
-        showAdminMessage(
-            "Approving performance...",
-            "loading"
-        );
+        const numericPoints =
+            Number(points);
 
         await setDoc(
             studentRef,
+
             {
                 musicStatus:
                     "🎉 Congratulations! Your performance has been approved.",
 
-                xp: increment(50),
+                xp: increment(numericPoints),
 
                 updatedAt: serverTimestamp()
             },
+
             {
                 merge: true
             }
         );
 
-        showAdminMessage(
-            "Performance approved. Kiamahr earned 50 XP!",
-            "success"
+        console.log(
+            "Performance approved."
+        );
+
+        alert(
+            "Performance approved! +" +
+            numericPoints +
+            " XP"
         );
     } catch (error) {
         console.error(
-            "Firebase approval error:",
+            "Approval failed:",
             error
         );
 
-        showAdminMessage(
-            `Firebase approval error: ${error.message}`,
-            "error"
-        );
-    } finally {
-        setButtonsDisabled(false);
-    }
-}
-
-
-/* =========================
-   Parent login
-========================= */
-
-function loginParent() {
-    const passwordInput =
-        getElement("password");
-
-    const loginCard =
-        getElement("login-card");
-
-    const parentPanel =
-        getElement("parent-panel");
-
-    if (!passwordInput || !parentPanel) {
-        return;
-    }
-
-    if (passwordInput.value === PARENT_PASSWORD) {
-        parentPanel.hidden = false;
-
-        if (loginCard) {
-            loginCard.hidden = true;
-        }
-
-        showAdminMessage(
-            "Parent panel unlocked.",
-            "success"
-        );
-    } else {
-        showAdminMessage(
-            "Wrong password. Please try again.",
-            "error"
-        );
-
-        passwordInput.value = "";
-        passwordInput.focus();
-    }
-}
-
-
-/* =========================
-   Page initialization
-========================= */
-
-function initializePage() {
-    startStudentListener();
-
-    const loginButton =
-        getElement("login-button");
-
-    const passwordInput =
-        getElement("password");
-
-    const listeningButton =
-        getElement("listening-button");
-
-    const reviewingButton =
-        getElement("reviewing-button");
-
-    const approveButton =
-        getElement("approve-button");
-
-    if (loginButton) {
-        loginButton.addEventListener(
-            "click",
-            loginParent
+        alert(
+            "Firebase error: " +
+            error.message
         );
     }
-
-    if (passwordInput) {
-        passwordInput.addEventListener(
-            "keydown",
-            (event) => {
-                if (event.key === "Enter") {
-                    loginParent();
-                }
-            }
-        );
-    }
-
-    if (listeningButton) {
-        listeningButton.addEventListener(
-            "click",
-            () => {
-                updatePerformanceStatus(
-                    "🎧 We are listening to your performance..."
-                );
-            }
-        );
-    }
-
-    if (reviewingButton) {
-        reviewingButton.addEventListener(
-            "click",
-            () => {
-                updatePerformanceStatus(
-                    "🔍 Your rhythm and accuracy are being reviewed..."
-                );
-            }
-        );
-    }
-
-    if (approveButton) {
-        approveButton.addEventListener(
-            "click",
-            approvePerformance
-        );
-    }
-}
+};
 
 
-document.addEventListener(
-    "DOMContentLoaded",
-    initializePage
+console.log(
+    "app.js loaded successfully."
 );
