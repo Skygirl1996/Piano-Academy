@@ -68,7 +68,29 @@ style="display:none;"
 
 <h2>🎼 Performance Evaluation</h2>
 
+<h3>🎧 Performance Status</h3>
 
+
+<button onclick="
+window.changeStatus(
+'🎧 We are listening to your performance...'
+)
+">
+
+Listening
+
+</button>
+
+
+<button onclick="
+window.changeStatus(
+'🔍 Your rhythm and accuracy are being reviewed...'
+)
+">
+
+Reviewing
+
+</button>
 
 <label>
 Song Name
@@ -84,96 +106,53 @@ placeholder="Song name"
 
 <h3>⭐ Performance Quality</h3>
 
-
-<label>
-<input type="radio" name="performance" value="50">
-Excellent Performance (+50 XP)
-</label>
-
-
-<label>
-<input type="radio" name="performance" value="35">
-Good Performance (+35 XP)
-</label>
-
-
-<label>
-<input type="radio" name="performance" value="20">
-Practice Attempt (+20 XP)
-</label>
-
-
+<select id="performance">
+<option value="0">None</option>
+<option value="50">Excellent Performance (+50 XP)</option>
+<option value="35">Good Performance (+35 XP)</option>
+<option value="20">Practice Attempt (+20 XP)</option>
+</select>
 
 
 
 <h3>🔁 Song Repetition</h3>
 
-
-<label>
-<input type="radio" name="repetition" value="50">
-Low Repetition (+50 XP)
-</label>
-
-
-<label>
-<input type="radio" name="repetition" value="25">
-Medium Repetition (+25 XP)
-</label>
-
-
-<label>
-<input type="radio" name="repetition" value="10">
-High Repetition (+10 XP)
-</label>
-
-
+<select id="repetition">
+<option value="0">None</option>
+<option value="50">Low Repetition (+50 XP)</option>
+<option value="25">Medium Repetition (+25 XP)</option>
+<option value="10">High Repetition (+10 XP)</option>
+</select>
 
 
 
 <h3>🎯 Difficulty</h3>
 
-
-<label>
-<input type="radio" name="difficulty" value="1">
-Easy ×1
-</label>
-
-
-<label>
-<input type="radio" name="difficulty" value="1.5">
-Medium ×1.5
-</label>
-
-
-<label>
-<input type="radio" name="difficulty" value="2">
-Hard ×2
-</label>
-
-
-<label>
-<input type="radio" name="difficulty" value="3">
-Master ×3
-</label>
-
-
+<select id="difficulty">
+<option value="1">None (×1)</option>
+<option value="1">Easy ×1</option>
+<option value="1.5">Medium ×1.5</option>
+<option value="2">Hard ×2</option>
+<option value="3">Master ×3</option>
+</select>
 
 
 
 <h3>🏆 Bonuses</h3>
-
 
 <label>
 <input type="checkbox" class="bonus" value="100">
 New Song Learned (+100 XP)
 </label>
 
+<br>
 
 <label>
 <input type="checkbox" class="bonus" value="150">
 Difficult Challenge (+150 XP)
 </label>
 
+<br>
 
 <label>
 <input type="checkbox" class="bonus" value="50">
@@ -183,51 +162,60 @@ Personal Record (+50 XP)
 
 
 
-
 <h3>🎹 Technical Evaluation</h3>
 
 
-<label>
-<input type="radio" name="rhythm" value="10">
+<select id="rhythm">
+
+<option value="0">
+None
+</option>
+
+<option value="10">
 Perfect Rhythm (+10 XP)
-</label>
+</option>
 
-
-<label>
-<input type="radio" name="rhythm" value="-5">
+<option value="-5">
 Rhythm Problem (-5 XP)
-</label>
+</option>
+
+</select>
 
 
 
-<label>
-<input type="radio" name="notes" value="10">
+<select id="notes">
+
+<option value="0">
+None
+</option>
+
+<option value="10">
 Accurate Notes (+10 XP)
-</label>
+</option>
 
-
-<label>
-<input type="radio" name="notes" value="-5">
+<option value="-5">
 Wrong Notes (-5 XP)
-</label>
+</option>
+
+</select>
 
 
 
-<label>
-<input type="radio" name="expression" value="10">
+<select id="expression">
+
+<option value="0">
+None
+</option>
+
+<option value="10">
 Excellent Expression (+10 XP)
-</label>
+</option>
 
-
-<label>
-<input type="radio" name="expression" value="-5">
+<option value="-5">
 Needs Expression (-5 XP)
-</label>
+</option>
 
-
-
-
-
+</select>
 
 <h2>
 Final XP:
