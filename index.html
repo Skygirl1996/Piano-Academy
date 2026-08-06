@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Piano Academy</title>
-    <link rel="stylesheet" href="./academy-style.css?v=120">
+    <link rel="stylesheet" href="./academy-style.css?v=121">
 </head>
 
 <body class="academy-page">
@@ -41,7 +41,7 @@
 
             <div class="student-info">
                 <p class="mini-label">Student</p>
-                <h2>Kiyamehr Karimipour</h2>
+                <h2>Kiamahr</h2>
                 <p>Keep practicing and enjoy the journey</p>
             </div>
 
@@ -175,16 +175,17 @@
             </div>
         </section>
 
-        <section class="glass-card teacher-card">
+        <section
+            id="teacher-message-card"
+            class="glass-card teacher-card"
+            hidden
+        >
             <div class="teacher-badge">🌟</div>
 
             <div class="teacher-message-content">
                 <p class="mini-label">Teacher's Message</p>
                 <h2>Today's Note</h2>
-                <p id="teacher-message">
-                    Every beautiful performance begins with patient practice,
-                    focused listening, and confidence in every note.
-                </p>
+                <p id="teacher-message"></p>
             </div>
         </section>
 
@@ -206,6 +207,6 @@
         </section>
     </main>
 
-    <script type="module" src="./app.js?v=120"></script>
+    <script type="module" src="./app.js?v=121"></script>
 </body>
 </html>

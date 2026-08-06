@@ -351,12 +351,17 @@ function updateAcademyPage(student) {
     const levelBox = getElement("level");
     const progressBar = getElement("progress");
     const progressText = getElement("progress-text");
+    const teacherMessageCard = getElement("teacher-message-card");
     const teacherMessageBox = getElement("teacher-message");
     const teacherMessageInput = getElement("teacher-message-input");
 
-    const teacherMessage =
-        String(student.teacherMessage || "").trim() ||
-        "Every beautiful performance begins with patient practice, focused listening, and confidence in every note.";
+    const teacherMessage = String(
+        student.teacherMessage || ""
+    ).trim();
+
+    if (teacherMessageCard) {
+        teacherMessageCard.hidden = !teacherMessage;
+    }
 
     if (teacherMessageBox) {
         teacherMessageBox.textContent = teacherMessage;
@@ -492,16 +497,6 @@ async function saveTeacherMessage() {
         input?.value || ""
     ).trim();
 
-    if (!message) {
-        setParentMessage(
-            "Please write a teacher's message first.",
-            "error"
-        );
-
-        input?.focus();
-        return;
-    }
-
     try {
         if (button) {
             button.disabled = true;
@@ -528,7 +523,9 @@ async function saveTeacherMessage() {
         );
 
         setParentMessage(
-            "Teacher's message saved successfully.",
+            message
+                ? "Teacher's message saved successfully."
+                : "Teacher's message cleared. No message will be shown today.",
             "success"
         );
     } catch (error) {
@@ -550,7 +547,7 @@ ${error.message}`
         if (button) {
             button.disabled = false;
             button.textContent =
-                "Save Teacher's Message";
+                "Save / Clear Teacher's Message";
         }
     }
 }
