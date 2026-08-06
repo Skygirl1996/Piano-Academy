@@ -141,37 +141,22 @@ alert("Wrong password");
 
 
 
-function startListening(){
-
-
-changeStatus(
-"🎧 Listening to your performance..."
-);
-
-
+async function startListening() {
+    await window.changeStatus(
+        "🎧 We are listening to your performance..."
+    );
 }
 
 
-
-function reviewing(){
-
-
-changeStatus(
-"🔍 Reviewing rhythm and accuracy..."
-);
-
-
+async function reviewing() {
+    await window.changeStatus(
+        "🔍 Your rhythm and accuracy are being reviewed..."
+    );
 }
 
 
-
-
-function approve(){
-
-
-approveScore(50);
-
-
+async function approve() {
+    await window.approveScore(50);
 }
 
 
