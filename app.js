@@ -326,18 +326,6 @@ if(calculateButton){
 }
 
 
-function getRadioValue(name){
-
-    const item =
-    document.querySelector(
-        `input[name="${name}"]:checked`
-    );
-
-    return item ? Number(item.value) : 0;
-
-}
-
-
 
 
 function calculateXP(){
