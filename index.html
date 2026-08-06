@@ -1,163 +1,152 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
 
-<title>
-Online Piano Academy
-</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
+    <title>Online Piano Academy</title>
 
-<link rel="stylesheet" href="style.css">
-
+    <link
+        rel="stylesheet"
+        href="./style.css?v=6"
+    >
 </head>
 
 
 <body>
 
+    <div class="music-notes">
+        ♪ ♫ ♬ ♪ ♫
+    </div>
 
-<div class="container">
 
+    <main class="container">
 
-<h1>
-🎹 Online Piano Academy
-</h1>
+        <header class="academy-header">
+            <div class="piano-icon">🎹</div>
 
+            <h1>Online Piano Academy</h1>
 
+            <p>Your musical adventure starts here!</p>
+        </header>
 
-<div class="card profile">
 
+        <section class="card profile-card">
 
-<h2>
-Hello Kiamahr 👋
-</h2>
+            <div class="avatar">
+                🎼
+            </div>
 
+            <div>
+                <p class="welcome-text">
+                    Welcome back,
+                </p>
 
-<p>
-Young Pianist
-</p>
+                <h2>Kiamahr</h2>
 
+                <p>Young Pianist</p>
+            </div>
 
-<div class="level">
+            <div
+                id="level"
+                class="level-badge"
+            >
+                ⭐ Level 1
+            </div>
 
-⭐ Level 1
+        </section>
 
-</div>
 
+        <section class="card performance-card">
 
-</div>
+            <div class="section-heading">
+                <span>🎧</span>
 
+                <div>
+                    <h2>Today's Performance</h2>
 
+                    <p>Live evaluation status</p>
+                </div>
+            </div>
 
 
+            <div class="status-box">
 
-<div class="card">
+                <div class="status-animation">
+                    ♪
+                </div>
 
+                <p id="status">
+                    Connecting to the academy...
+                </p>
 
-<h2>
-🎼 Today's Performance
-</h2>
+            </div>
 
+        </section>
 
 
-<div class="status-box">
+        <section class="card progress-card">
 
+            <div class="section-heading">
+                <span>🏆</span>
 
-<p id="status">
+                <div>
+                    <h2>My Progress</h2>
 
-Waiting for performance...
+                    <p>Keep playing to reach the next level</p>
+                </div>
+            </div>
 
-</p>
 
+            <div class="xp-row">
+                <span>Experience Points</span>
 
-</div>
+                <strong id="score">
+                    0 XP
+                </strong>
+            </div>
 
 
+            <div class="progress">
+                <div
+                    id="progress"
+                    class="progress-bar"
+                ></div>
+            </div>
 
-</div>
+        </section>
 
 
+        <section class="card teacher-card">
 
+            <div class="teacher-icon">
+                🌟
+            </div>
 
+            <h2>Teacher's Message</h2>
 
+            <p>
+                Every great pianist starts with one note.
+                Keep practicing, believe in yourself,
+                and enjoy every melody!
+            </p>
 
-<div class="card">
+        </section>
 
+    </main>
 
-<h2>
-🏆 Progress
-</h2>
 
-
-
-<div class="stat">
-
-⭐ XP:
-
-<span id="score">
-0 XP
-</span>
-
-
-</div>
-
-
-
-
-<div class="progress">
-
-
-<div 
-id="progress"
-class="progress-bar">
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-
-<div class="card message">
-
-
-<h3>
-🎵 Teacher Message
-</h3>
-
-
-<p>
-
-Every great pianist starts with one note.
-Keep practicing and enjoy your music!
-
-</p>
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-<script type="module" src="./app.js?v=3"></script>
-
+    <script
+        type="module"
+        src="./app.js?v=6"
+    ></script>
 
 </body>
-
 
 </html>
