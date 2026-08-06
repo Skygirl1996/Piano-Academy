@@ -199,7 +199,131 @@ console.log(
     "app.js loaded successfully."
 );
 
+// ==============================
+// Performance Evaluation System
+// ==============================
 
+
+function getRadioValue(name){
+
+    const selected =
+    document.querySelector(
+        `input[name="${name}"]:checked`
+    );
+
+    return selected
+    ? Number(selected.value)
+    : 0;
+
+}
+
+
+
+
+function calculateXP(){
+
+
+    let base =
+    getRadioValue("performance");
+
+
+    let repetition =
+    getRadioValue("repetition");
+
+
+    let difficulty =
+    getRadioValue("difficulty");
+
+
+    if(difficulty === 0){
+        difficulty = 1;
+    }
+
+
+
+    let bonuses = 0;
+
+
+    document
+    .querySelectorAll(".bonus:checked")
+    .forEach(
+        item => {
+
+            bonuses +=
+            Number(item.value);
+
+        }
+    );
+
+
+
+    let rhythm =
+    getRadioValue("rhythm");
+
+
+    let notes =
+    getRadioValue("notes");
+
+
+    let expression =
+    getRadioValue("expression");
+
+
+
+    let finalXP =
+    (
+        base +
+        repetition +
+        bonuses +
+        rhythm +
+        notes +
+        expression
+    )
+    *
+    difficulty;
+
+
+
+    finalXP =
+    Math.round(finalXP);
+
+
+
+    document.getElementById(
+        "final-xp"
+    ).innerText =
+    finalXP;
+
+
+
+    document.getElementById(
+        "reward"
+    ).innerText =
+    finalXP * 100;
+
+
+
+    return finalXP;
+
+}
+
+
+
+
+const calculateButton =
+document.getElementById(
+    "calculate-button"
+);
+
+
+if(calculateButton){
+
+    calculateButton.addEventListener(
+        "click",
+        calculateXP
+    );
+
+}
 
 
 function getRadioValue(name){
