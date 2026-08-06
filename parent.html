@@ -2,293 +2,287 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta charset="UTF-8">
 
-    <title>Online Piano Academy | Parent Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link
-        rel="stylesheet"
-        href="./style.css?v=11"
-    >
+<title>Online Piano Academy | Parent Panel</title>
+
+<link rel="stylesheet" href="./style.css?v=20">
+
 </head>
+
 
 <body>
 
-    <div class="music-notes">
-        ♪ ♫ ♬ ♪ ♫
-    </div>
 
-    <main class="container">
+<main class="container">
 
-        <header class="academy-header">
-            <div class="piano-icon">🎹</div>
 
-            <h1>Online Piano Academy</h1>
+<header class="academy-header">
 
-            <p>Parent Performance Review</p>
-        </header>
+<div class="piano-icon">🎹</div>
 
+<h1>Online Piano Academy</h1>
 
-        <section
-            id="login-card"
-            class="card login-card"
-        >
-            <div class="card-icon">🔐</div>
+<p>Parent Performance Evaluation</p>
 
-            <h2>Parent Login</h2>
+</header>
 
-            <p>
-                Enter the parent password to review
-                Kiamahr's performance.
-            </p>
 
-            <label for="password">
-                Password
-            </label>
 
-            <input
-                id="password"
-                type="password"
-                autocomplete="current-password"
-                placeholder="Enter password"
-            >
+<section class="card login-card" id="login-card">
 
-            <button
-                id="login-button"
-                type="button"
-                class="primary-button"
-            >
-                Unlock Parent Panel
-            </button>
-        </section>
 
+<h2>🔐 Parent Login</h2>
 
-        <section
-            id="parent-panel"
-            class="card parent-panel"
-            hidden
-        >
-            <div class="card-icon">🎧</div>
 
-            <h2>Review Kiamahr's Performance</h2>
+<input 
+id="password"
+type="password"
+placeholder="Password"
+>
 
-            <p class="panel-description">
-                Select the current evaluation stage.
-                The academy page will update automatically.
-            </p>
 
+<button id="login-button">
+Unlock Panel
+</button>
 
-            <div class="parent-actions">
 
-                <button
-                    id="listening-button"
-                    type="button"
-                    class="status-button listening-button"
-                >
-                    <span>🎧</span>
+</section>
 
-                    <strong>Listening</strong>
 
-                    <small>
-                        We are listening to the performance
-                    </small>
-                </button>
 
 
-                <button
-                    id="reviewing-button"
-                    type="button"
-                    class="status-button reviewing-button"
-                >
-                    <span>🔍</span>
 
-                    <strong>Reviewing</strong>
+<section 
+class="card"
+id="parent-panel"
+hidden
+>
 
-                    <small>
-                        Rhythm and accuracy are being checked
-                    </small>
-                </button>
 
+<h2>🎼 Performance Evaluation</h2>
 
-                <button
-                    id="approve-button"
-                    type="button"
-                    class="status-button approve-button"
-                >
-                    <span>🏆</span>
 
-                    <strong>Approve Performance</strong>
 
-                    <small>
-                        Confirm performance and award 50 XP
-                    </small>
-                </button>
+<label>
+Song Name
+</label>
 
-            </div>
 
+<input 
+id="song-name"
+placeholder="Song name"
+>
 
-            <p
-                id="admin-message"
-                class="admin-message"
-                aria-live="polite"
-            ></p>
 
-        </section>
 
-    </main>
 
+<h3>⭐ Performance Quality</h3>
 
-    <script
-        type="module"
-        src="./app.js?v=11"
-    ></script>
 
+<label>
+<input type="radio" name="performance" value="50">
+Excellent Performance (+50 XP)
+</label>
 
-    <script>
-        document.addEventListener(
-            "DOMContentLoaded",
-            function () {
 
-                const loginButton =
-                    document.getElementById("login-button");
+<label>
+<input type="radio" name="performance" value="35">
+Good Performance (+35 XP)
+</label>
 
-                const passwordInput =
-                    document.getElementById("password");
 
-                const loginCard =
-                    document.getElementById("login-card");
+<label>
+<input type="radio" name="performance" value="20">
+Practice Attempt (+20 XP)
+</label>
 
-                const parentPanel =
-                    document.getElementById("parent-panel");
 
-                const listeningButton =
-                    document.getElementById("listening-button");
 
-                const reviewingButton =
-                    document.getElementById("reviewing-button");
 
-                const approveButton =
-                    document.getElementById("approve-button");
 
-                const adminMessage =
-                    document.getElementById("admin-message");
+<h3>🔁 Song Repetition</h3>
 
 
-                function showMessage(message, type) {
-                    adminMessage.textContent = message;
-                    adminMessage.className =
-                        "admin-message " + type;
-                }
+<label>
+<input type="radio" name="repetition" value="50">
+Low Repetition (+50 XP)
+</label>
 
 
-                function login() {
-                    const password =
-                        passwordInput.value;
+<label>
+<input type="radio" name="repetition" value="25">
+Medium Repetition (+25 XP)
+</label>
 
-                    if (password === "1234") {
-                        parentPanel.hidden = false;
-                        loginCard.hidden = true;
 
-                        showMessage(
-                            "Parent panel unlocked.",
-                            "success"
-                        );
-                    } else {
-                        alert("Wrong password");
+<label>
+<input type="radio" name="repetition" value="10">
+High Repetition (+10 XP)
+</label>
 
-                        passwordInput.value = "";
-                        passwordInput.focus();
-                    }
-                }
 
 
-                loginButton.addEventListener(
-                    "click",
-                    login
-                );
 
 
-                passwordInput.addEventListener(
-                    "keydown",
-                    function (event) {
-                        if (event.key === "Enter") {
-                            login();
-                        }
-                    }
-                );
+<h3>🎯 Difficulty</h3>
 
 
-                listeningButton.addEventListener(
-                    "click",
-                    async function () {
-                        if (
-                            typeof window.changeStatus
-                            !== "function"
-                        ) {
-                            showMessage(
-                                "app.js is not loaded correctly.",
-                                "error"
-                            );
+<label>
+<input type="radio" name="difficulty" value="1">
+Easy ×1
+</label>
 
-                            return;
-                        }
 
-                        await window.changeStatus(
-                            "🎧 We are listening to your performance..."
-                        );
-                    }
-                );
+<label>
+<input type="radio" name="difficulty" value="1.5">
+Medium ×1.5
+</label>
 
 
-                reviewingButton.addEventListener(
-                    "click",
-                    async function () {
-                        if (
-                            typeof window.changeStatus
-                            !== "function"
-                        ) {
-                            showMessage(
-                                "app.js is not loaded correctly.",
-                                "error"
-                            );
+<label>
+<input type="radio" name="difficulty" value="2">
+Hard ×2
+</label>
 
-                            return;
-                        }
 
-                        await window.changeStatus(
-                            "🔍 Your rhythm and accuracy are being reviewed..."
-                        );
-                    }
-                );
+<label>
+<input type="radio" name="difficulty" value="3">
+Master ×3
+</label>
 
 
-                approveButton.addEventListener(
-                    "click",
-                    async function () {
-                        if (
-                            typeof window.approveScore
-                            !== "function"
-                        ) {
-                            showMessage(
-                                "app.js is not loaded correctly.",
-                                "error"
-                            );
 
-                            return;
-                        }
 
-                        await window.approveScore(50);
-                    }
-                );
 
-            }
-        );
-    </script>
+<h3>🏆 Bonuses</h3>
+
+
+<label>
+<input type="checkbox" class="bonus" value="100">
+New Song Learned (+100 XP)
+</label>
+
+
+<label>
+<input type="checkbox" class="bonus" value="150">
+Difficult Challenge (+150 XP)
+</label>
+
+
+<label>
+<input type="checkbox" class="bonus" value="50">
+Personal Record (+50 XP)
+</label>
+
+
+
+
+
+<h3>🎹 Technical Evaluation</h3>
+
+
+<label>
+<input type="radio" name="rhythm" value="10">
+Perfect Rhythm (+10 XP)
+</label>
+
+
+<label>
+<input type="radio" name="rhythm" value="-5">
+Rhythm Problem (-5 XP)
+</label>
+
+
+
+<label>
+<input type="radio" name="notes" value="10">
+Accurate Notes (+10 XP)
+</label>
+
+
+<label>
+<input type="radio" name="notes" value="-5">
+Wrong Notes (-5 XP)
+</label>
+
+
+
+<label>
+<input type="radio" name="expression" value="10">
+Excellent Expression (+10 XP)
+</label>
+
+
+<label>
+<input type="radio" name="expression" value="-5">
+Needs Expression (-5 XP)
+</label>
+
+
+
+
+
+
+<h2>
+Final XP:
+<span id="final-xp">
+0
+</span>
+XP
+</h2>
+
+
+
+<h2>
+Reward:
+<span id="reward">
+0
+</span>
+ تومان
+</h2>
+
+
+
+
+<button id="calculate-button">
+
+Calculate XP
+
+</button>
+
+
+
+<button id="save-button">
+
+Save Performance
+
+</button>
+
+
+
+<p id="message"></p>
+
+
+</section>
+
+
+
+</main>
+
+
+
+
+<script 
+type="module"
+src="./app.js?v=20">
+</script>
+
+
 
 </body>
+
 </html>
