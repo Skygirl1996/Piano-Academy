@@ -198,3 +198,111 @@ async function (points) {
 console.log(
     "app.js loaded successfully."
 );
+
+
+
+
+function getRadioValue(name){
+
+    const item =
+    document.querySelector(
+        `input[name="${name}"]:checked`
+    );
+
+    return item ? Number(item.value) : 0;
+
+}
+
+
+
+
+function calculateXP(){
+
+
+let base =
+getRadioValue("performance");
+
+
+let repetition =
+getRadioValue("repetition");
+
+
+let difficulty =
+getRadioValue("difficulty");
+
+
+if(difficulty === 0){
+    difficulty = 1;
+}
+
+
+
+let bonuses = 0;
+
+
+document
+.querySelectorAll(".bonus:checked")
+.forEach(
+(item)=>{
+    bonuses += Number(item.value);
+}
+);
+
+
+
+let rhythm =
+getRadioValue("rhythm");
+
+
+let notes =
+getRadioValue("notes");
+
+
+let expression =
+getRadioValue("expression");
+
+
+
+let total =
+(
+base +
+repetition +
+bonuses +
+rhythm +
+notes +
+expression
+)
+*
+difficulty;
+
+
+
+document.getElementById(
+"final-xp"
+).innerText =
+Math.round(total);
+
+
+
+document.getElementById(
+"reward"
+).innerText =
+Math.round(total * 100);
+
+
+
+return Math.round(total);
+
+
+}
+
+
+
+
+document
+.getElementById("calculate-button")
+?.addEventListener(
+"click",
+calculateXP
+);
+
