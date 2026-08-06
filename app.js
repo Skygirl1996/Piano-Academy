@@ -3,10 +3,11 @@ import { db } from "./firebase.js";
 import {
     collection,
     doc,
+    getDoc,
     onSnapshot,
-    runTransaction,
     serverTimestamp,
-    setDoc
+    setDoc,
+    writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 
@@ -29,6 +30,15 @@ function getElement(id) {
 }
 
 
+function getNumber(value) {
+    const number = Number(value);
+
+    return Number.isFinite(number)
+        ? number
+        : 0;
+}
+
+
 function setParentMessage(message, type = "success") {
     const messageBox = getElement("message");
 
@@ -48,7 +58,7 @@ function getSelectValue(id) {
         return 0;
     }
 
-    return Number(element.value) || 0;
+    return getNumber(element.value);
 }
 
 
@@ -59,12 +69,14 @@ function getSelectText(id) {
         return "None";
     }
 
-    return (
-        element.options[element.selectedIndex]
-            ?.textContent
+    const option =
+        element.options[element.selectedIndex];
+
+    return option
+        ? option.textContent
             .replace(/\s+/g, " ")
-            .trim() || "None"
-    );
+            .trim()
+        : "None";
 }
 
 
@@ -75,7 +87,7 @@ function getSelectText(id) {
 function calculateLevelData(totalXP) {
     const safeXP = Math.max(
         0,
-        Number(totalXP) || 0
+        getNumber(totalXP)
     );
 
     const level =
@@ -92,16 +104,11 @@ function calculateLevelData(totalXP) {
             XP_PER_LEVEL
         ) * 100;
 
-    const xpRemaining =
-        XP_PER_LEVEL -
-        xpInCurrentLevel;
-
     return {
         totalXP: safeXP,
         level,
         xpInCurrentLevel,
-        progressPercent,
-        xpRemaining
+        progressPercent
     };
 }
 
@@ -197,7 +204,176 @@ function updateStatusAnimation(statusText) {
 
 
 // ========================================
-// Update Child Academy Page
+// Report Card
+// ========================================
+
+function setReportRow(
+    rowId,
+    valueId,
+    value,
+    shouldShow = true
+) {
+    const row = getElement(rowId);
+    const valueBox = getElement(valueId);
+
+    if (!row || !valueBox) {
+        return;
+    }
+
+    row.hidden = !shouldShow;
+
+    if (shouldShow) {
+        valueBox.textContent = value;
+    }
+}
+
+
+function renderLatestReport(report) {
+    const emptyBox =
+        getElement("report-empty");
+
+    const contentBox =
+        getElement("report-content");
+
+    if (!emptyBox || !contentBox) {
+        return;
+    }
+
+    if (!report) {
+        emptyBox.hidden = false;
+        contentBox.hidden = true;
+        return;
+    }
+
+    emptyBox.hidden = true;
+    contentBox.hidden = false;
+
+    const song =
+        report.song ||
+        "Practice Session";
+
+    const performanceXP =
+        getNumber(report.performanceXP);
+
+    const repetitionXP =
+        getNumber(report.repetitionXP);
+
+    const difficultyMultiplier =
+        getNumber(
+            report.difficultyMultiplier
+        ) || 1;
+
+    const rhythmXP =
+        getNumber(report.rhythmXP);
+
+    const notesXP =
+        getNumber(report.notesXP);
+
+    const expressionXP =
+        getNumber(report.expressionXP);
+
+    const bonusXP =
+        getNumber(report.bonusXP);
+
+    const finalXP =
+        getNumber(
+            report.finalXP ??
+            report.totalXP
+        );
+
+    const reward =
+        getNumber(report.reward);
+
+    setReportRow(
+        "report-song-row",
+        "report-song",
+        song,
+        true
+    );
+
+    setReportRow(
+        "report-performance-row",
+        "report-performance",
+        report.performanceLabel ||
+        `${performanceXP} XP`,
+        performanceXP !== 0
+    );
+
+    setReportRow(
+        "report-repetition-row",
+        "report-repetition",
+        report.repetitionLabel ||
+        `${repetitionXP} XP`,
+        repetitionXP !== 0
+    );
+
+    setReportRow(
+        "report-difficulty-row",
+        "report-difficulty",
+        report.difficultyLabel ||
+        `×${difficultyMultiplier}`,
+        true
+    );
+
+    const bonusLabels =
+        Array.isArray(report.bonusLabels)
+            ? report.bonusLabels
+            : [];
+
+    setReportRow(
+        "report-bonus-row",
+        "report-bonus",
+        bonusLabels.length > 0
+            ? bonusLabels.join(" • ")
+            : `${bonusXP} XP`,
+        bonusXP !== 0 ||
+        bonusLabels.length > 0
+    );
+
+    setReportRow(
+        "report-rhythm-row",
+        "report-rhythm",
+        report.rhythmLabel ||
+        `${rhythmXP} XP`,
+        rhythmXP !== 0
+    );
+
+    setReportRow(
+        "report-notes-row",
+        "report-notes",
+        report.notesLabel ||
+        `${notesXP} XP`,
+        notesXP !== 0
+    );
+
+    setReportRow(
+        "report-expression-row",
+        "report-expression",
+        report.expressionLabel ||
+        `${expressionXP} XP`,
+        expressionXP !== 0
+    );
+
+    const totalXPBox =
+        getElement("report-total-xp");
+
+    const rewardBox =
+        getElement("report-reward");
+
+    if (totalXPBox) {
+        totalXPBox.textContent =
+            finalXP.toLocaleString();
+    }
+
+    if (rewardBox) {
+        rewardBox.textContent =
+            reward.toLocaleString();
+    }
+}
+
+
+// ========================================
+// Update Academy Page
 // ========================================
 
 function updateAcademyPage(student) {
@@ -223,77 +399,43 @@ function updateAcademyPage(student) {
     const progressText =
         getElement("progress-text");
 
-    const currentLevelXP =
-        getElement("current-level-xp");
-
-    const nextLevelXP =
-        getElement("next-level-xp");
-
     if (statusBox) {
         statusBox.textContent =
             currentStatus;
     }
 
-    /*
-    امتیاز کل کودک
-    */
     if (scoreBox) {
         scoreBox.textContent =
             `${levelData.totalXP.toLocaleString()} XP`;
     }
 
-    /*
-    Level محاسبه‌شده از روی XP
-    */
     if (levelBox) {
         levelBox.textContent =
             `⭐ Level ${levelData.level}`;
     }
 
-    /*
-    نوار پیشرفت Level فعلی
-    */
     if (progressBar) {
         progressBar.style.width =
             `${levelData.progressPercent}%`;
-
-        progressBar.setAttribute(
-            "aria-valuenow",
-            String(
-                Math.round(
-                    levelData.progressPercent
-                )
-            )
-        );
     }
 
-    /*
-    این بخش‌ها اختیاری هستند.
-    اگر در HTML وجود داشته باشند آپدیت می‌شوند.
-    */
     if (progressText) {
         progressText.textContent =
             `${levelData.xpInCurrentLevel} / ${XP_PER_LEVEL} XP`;
     }
 
-    if (currentLevelXP) {
-        currentLevelXP.textContent =
-            levelData.xpInCurrentLevel;
-    }
-
-    if (nextLevelXP) {
-        nextLevelXP.textContent =
-            XP_PER_LEVEL;
-    }
-
     updateStatusAnimation(
         currentStatus
+    );
+
+    renderLatestReport(
+        student.latestReport
     );
 }
 
 
 // ========================================
-// Live Firebase Listener
+// Firebase Live Listener
 // ========================================
 
 function startStudentListener() {
@@ -306,13 +448,10 @@ function startStudentListener() {
                     "Student document does not exist."
                 );
 
-                const statusBox =
-                    getElement("status");
-
-                if (statusBox) {
-                    statusBox.textContent =
-                        "Student profile was not found.";
-                }
+                setParentMessage(
+                    "Student profile does not exist.",
+                    "error"
+                );
 
                 return;
             }
@@ -323,7 +462,7 @@ function startStudentListener() {
             updateAcademyPage(student);
 
             console.log(
-                "Firebase student updated:",
+                "Firebase data received:",
                 student
             );
         },
@@ -333,14 +472,6 @@ function startStudentListener() {
                 "Firebase listener error:",
                 error
             );
-
-            const statusBox =
-                getElement("status");
-
-            if (statusBox) {
-                statusBox.textContent =
-                    `Firebase error: ${error.message}`;
-            }
 
             setParentMessage(
                 `Firebase error: ${error.message}`,
@@ -404,30 +535,26 @@ function getBonusData() {
             )
         );
 
-    const bonusXP =
-        checkedBonuses.reduce(
-            function (total, item) {
-                return (
-                    total +
-                    Number(item.value)
-                );
-            },
-            0
-        );
+    let bonusXP = 0;
+    const bonusLabels = [];
 
-    const bonusLabels =
-        checkedBonuses.map(
-            function (item) {
-                return (
-                    item
-                        .closest("label")
-                        ?.textContent
+    checkedBonuses.forEach(
+        function (checkbox) {
+            bonusXP +=
+                getNumber(checkbox.value);
+
+            const label =
+                checkbox.closest("label");
+
+            if (label) {
+                bonusLabels.push(
+                    label.textContent
                         .replace(/\s+/g, " ")
-                        .trim() ||
-                    "Bonus"
+                        .trim()
                 );
             }
-        );
+        }
+    );
 
     return {
         bonusXP,
@@ -437,7 +564,7 @@ function getBonusData() {
 
 
 // ========================================
-// Calculate Performance XP
+// Calculate Form
 // ========================================
 
 function calculatePerformance() {
@@ -526,14 +653,14 @@ function calculateXP() {
     const result =
         calculatePerformance();
 
-    const xpBox =
+    const finalXPBox =
         getElement("final-xp");
 
     const rewardBox =
         getElement("reward");
 
-    if (xpBox) {
-        xpBox.textContent =
+    if (finalXPBox) {
+        finalXPBox.textContent =
             result.finalXP.toLocaleString();
     }
 
@@ -581,7 +708,60 @@ async function savePerformance() {
             songInput?.value.trim() ||
             "Practice Session";
 
-        const latestReport = {
+        const studentSnapshot =
+            await getDoc(studentRef);
+
+        if (!studentSnapshot.exists()) {
+            throw new Error(
+                "Student profile does not exist."
+            );
+        }
+
+        const student =
+            studentSnapshot.data();
+
+        const currentXP =
+            Math.max(
+                0,
+                getNumber(student.xp)
+            );
+
+        const currentMoney =
+            Math.max(
+                0,
+                getNumber(
+                    student.moneyBalance
+                )
+            );
+
+        const currentEarnedMoney =
+            Math.max(
+                0,
+                getNumber(
+                    student.totalEarnedMoney
+                )
+            );
+
+        const currentPerformances =
+            Math.max(
+                0,
+                getNumber(
+                    student.totalPerformances
+                )
+            );
+
+        const newTotalXP =
+            currentXP +
+            result.finalXP;
+
+        const newLevelData =
+            calculateLevelData(
+                newTotalXP
+            );
+
+        const report = {
+            studentId: STUDENT_ID,
+
             song,
 
             performanceXP:
@@ -635,6 +815,12 @@ async function savePerformance() {
             reward:
                 result.reward,
 
+            totalXPAfterSave:
+                newTotalXP,
+
+            levelAfterSave:
+                newLevelData.level,
+
             savedAt:
                 Date.now()
         };
@@ -646,157 +832,62 @@ async function savePerformance() {
             )
         );
 
-        const savedResult =
-            await runTransaction(
-                db,
+        const batch =
+            writeBatch(db);
 
-                async function (transaction) {
-                    const studentSnapshot =
-                        await transaction.get(
-                            studentRef
-                        );
+        batch.set(
+            logRef,
+            {
+                ...report,
+                createdAt:
+                    serverTimestamp()
+            }
+        );
 
-                    if (
-                        !studentSnapshot.exists()
-                    ) {
-                        throw new Error(
-                            "Student profile does not exist."
-                        );
-                    }
+        batch.set(
+            studentRef,
+            {
+                xp:
+                    newTotalXP,
 
-                    const student =
-                        studentSnapshot.data();
+                level:
+                    newLevelData.level,
 
-                    const currentXP =
-                        Math.max(
-                            0,
-                            Number(student.xp) || 0
-                        );
+                moneyBalance:
+                    currentMoney +
+                    result.reward,
 
-                    const currentMoney =
-                        Math.max(
-                            0,
-                            Number(
-                                student.moneyBalance
-                            ) || 0
-                        );
+                totalEarnedMoney:
+                    currentEarnedMoney +
+                    result.reward,
 
-                    const totalEarnedMoney =
-                        Math.max(
-                            0,
-                            Number(
-                                student.totalEarnedMoney
-                            ) || 0
-                        );
+                totalPerformances:
+                    currentPerformances + 1,
 
-                    const totalPerformances =
-                        Math.max(
-                            0,
-                            Number(
-                                student.totalPerformances
-                            ) || 0
-                        );
+                latestReport:
+                    report,
 
-                    const newTotalXP =
-                        currentXP +
-                        result.finalXP;
+                musicStatus:
+                    "🎉 Congratulations! Your performance has been approved.",
 
-                    const newLevelData =
-                        calculateLevelData(
-                            newTotalXP
-                        );
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
 
-                    const newMoneyBalance =
-                        currentMoney +
-                        result.reward;
+        await batch.commit();
 
-                    const newTotalEarned =
-                        totalEarnedMoney +
-                        result.reward;
-
-                    transaction.set(
-                        logRef,
-                        {
-                            studentId:
-                                STUDENT_ID,
-
-                            previousXP:
-                                currentXP,
-
-                            newTotalXP,
-
-                            level:
-                                newLevelData.level,
-
-                            ...latestReport,
-
-                            createdAt:
-                                serverTimestamp()
-                        }
-                    );
-
-                    transaction.set(
-                        studentRef,
-                        {
-                            xp:
-                                newTotalXP,
-
-                            level:
-                                newLevelData.level,
-
-                            moneyBalance:
-                                newMoneyBalance,
-
-                            totalEarnedMoney:
-                                newTotalEarned,
-
-                            totalPerformances:
-                                totalPerformances + 1,
-
-                            latestReport,
-
-                            musicStatus:
-                                "🎉 Congratulations! Your performance has been approved.",
-
-                            updatedAt:
-                                serverTimestamp()
-                        },
-                        {
-                            merge: true
-                        }
-                    );
-
-                    return {
-                        previousXP:
-                            currentXP,
-
-                        addedXP:
-                            result.finalXP,
-
-                        totalXP:
-                            newTotalXP,
-
-                        level:
-                            newLevelData.level,
-
-                        levelXP:
-                            newLevelData
-                                .xpInCurrentLevel,
-
-                        reward:
-                            result.reward
-                    };
-                }
-            );
-
-        const xpBox =
+        const finalXPBox =
             getElement("final-xp");
 
         const rewardBox =
             getElement("reward");
 
-        if (xpBox) {
-            xpBox.textContent =
+        if (finalXPBox) {
+            finalXPBox.textContent =
                 result.finalXP.toLocaleString();
         }
 
@@ -806,21 +897,20 @@ async function savePerformance() {
         }
 
         setParentMessage(
-            `Saved: +${savedResult.addedXP.toLocaleString()} XP | Total: ${savedResult.totalXP.toLocaleString()} XP | Level ${savedResult.level}`,
+            `Saved successfully: +${result.finalXP.toLocaleString()} XP | Total: ${newTotalXP.toLocaleString()} XP | Level ${newLevelData.level}`,
             "success"
         );
 
         alert(
             `Performance saved successfully!\n\n` +
-            `Added XP: ${savedResult.addedXP.toLocaleString()}\n` +
-            `Total XP: ${savedResult.totalXP.toLocaleString()}\n` +
-            `Level: ${savedResult.level}\n` +
-            `Level progress: ${savedResult.levelXP} / ${XP_PER_LEVEL} XP`
+            `Added XP: ${result.finalXP.toLocaleString()}\n` +
+            `Total XP: ${newTotalXP.toLocaleString()}\n` +
+            `Level: ${newLevelData.level}`
         );
 
         console.log(
             "Performance saved:",
-            savedResult
+            report
         );
     } catch (error) {
         console.error(
@@ -844,96 +934,6 @@ async function savePerformance() {
         }
     }
 }
-
-
-// ========================================
-// Compatibility: Manual XP Approval
-// ========================================
-
-window.approveScore =
-async function approveScore(points) {
-    const addedXP = Math.max(
-        0,
-        Number(points) || 0
-    );
-
-    try {
-        const result =
-            await runTransaction(
-                db,
-
-                async function (transaction) {
-                    const snapshot =
-                        await transaction.get(
-                            studentRef
-                        );
-
-                    if (!snapshot.exists()) {
-                        throw new Error(
-                            "Student profile does not exist."
-                        );
-                    }
-
-                    const student =
-                        snapshot.data();
-
-                    const currentXP =
-                        Math.max(
-                            0,
-                            Number(student.xp) || 0
-                        );
-
-                    const newTotalXP =
-                        currentXP + addedXP;
-
-                    const levelData =
-                        calculateLevelData(
-                            newTotalXP
-                        );
-
-                    transaction.set(
-                        studentRef,
-                        {
-                            xp:
-                                newTotalXP,
-
-                            level:
-                                levelData.level,
-
-                            musicStatus:
-                                "🎉 Congratulations! Your performance has been approved.",
-
-                            updatedAt:
-                                serverTimestamp()
-                        },
-                        {
-                            merge: true
-                        }
-                    );
-
-                    return {
-                        totalXP:
-                            newTotalXP,
-
-                        level:
-                            levelData.level
-                    };
-                }
-            );
-
-        alert(
-            `Approved +${addedXP} XP\n` +
-            `Total XP: ${result.totalXP}\n` +
-            `Level: ${result.level}`
-        );
-    } catch (error) {
-        console.error(error);
-
-        alert(
-            `Approval failed:\n${error.message}`
-        );
-    }
-};
 
 
 // ========================================
@@ -1045,15 +1045,15 @@ function initializeParentPanel() {
     }
 
     console.log(
-        "Parent controls initialized:",
+        "Parent controls:",
         {
-            login:
+            loginButton:
                 Boolean(loginButton),
 
-            calculate:
+            calculateButton:
                 Boolean(calculateButton),
 
-            save:
+            saveButton:
                 Boolean(saveButton)
         }
     );
@@ -1061,17 +1061,17 @@ function initializeParentPanel() {
 
 
 // ========================================
-// Start Application
+// Start
 // ========================================
 
-let applicationStarted = false;
+let appStarted = false;
 
 function startApplication() {
-    if (applicationStarted) {
+    if (appStarted) {
         return;
     }
 
-    applicationStarted = true;
+    appStarted = true;
 
     startStudentListener();
     initializeParentPanel();
@@ -1082,9 +1082,7 @@ function startApplication() {
 }
 
 
-if (
-    document.readyState === "loading"
-) {
+if (document.readyState === "loading") {
     document.addEventListener(
         "DOMContentLoaded",
         startApplication
