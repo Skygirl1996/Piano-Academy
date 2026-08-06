@@ -509,3 +509,111 @@ label{
         width:fit-content;
     }
 }
+
+
+.report-card{
+
+padding:26px;
+
+}
+
+
+.report-header{
+
+margin-bottom:20px;
+
+}
+
+
+.report-header p{
+
+opacity:.75;
+
+margin-top:8px;
+
+}
+
+
+
+.report-item{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:14px 16px;
+
+margin:10px 0;
+
+background:
+rgba(255,255,255,.10);
+
+border-radius:16px;
+
+border:1px solid rgba(255,255,255,.15);
+
+}
+
+
+.report-item strong{
+
+font-size:16px;
+
+}
+
+
+.report-item span{
+
+font-weight:700;
+
+text-align:right;
+
+}
+
+
+
+
+.report-total{
+
+margin-top:20px;
+
+padding:22px;
+
+text-align:center;
+
+border-radius:22px;
+
+
+background:
+
+linear-gradient(
+135deg,
+rgba(251,191,36,.35),
+rgba(245,158,11,.15)
+);
+
+
+border:1px solid rgba(251,191,36,.4);
+
+}
+
+
+
+.report-total h2{
+
+font-size:34px;
+
+margin:10px 0;
+
+}
+
+
+.report-total p{
+
+font-size:18px;
+
+font-weight:700;
+
+}
