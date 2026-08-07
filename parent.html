@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Piano Academy | Parent Panel</title>
-    <link rel="stylesheet" href="./parent-style.css?v=121">
+    <link rel="stylesheet" href="./parent-style.css?v=160">
 </head>
 
 <body class="parent-page">
@@ -190,10 +190,94 @@
                 </button>
             </div>
 
+            <section class="payment-card">
+                <div class="payment-card-head">
+                    <div>
+                        <p class="section-kicker">Reward Management</p>
+                        <h3>💳 Record Payment to Child</h3>
+                    </div>
+                </div>
+
+                <div class="payment-summary-grid">
+                    <div class="payment-summary-item">
+                        <span>Total Reward</span>
+                        <strong>
+                            <span id="parent-total-reward">0</span>
+                            تومان
+                        </strong>
+                    </div>
+
+                    <div class="payment-summary-item payment-summary-withdrawn">
+                        <span>Total Paid</span>
+                        <strong>
+                            − <span id="parent-total-withdrawn">0</span>
+                            تومان
+                        </strong>
+                    </div>
+
+                    <div class="payment-summary-item payment-summary-balance">
+                        <span>Available Balance</span>
+                        <strong>
+                            <span id="parent-available-balance">0</span>
+                            تومان
+                        </strong>
+                    </div>
+                </div>
+
+                <label for="payment-amount">Payment Amount (Toman)</label>
+                <input
+                    id="payment-amount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    inputmode="numeric"
+                    placeholder="Example: 50000"
+                >
+
+                <label for="payment-note">Payment Note (Optional)</label>
+                <input
+                    id="payment-note"
+                    type="text"
+                    maxlength="150"
+                    placeholder="Example: August reward payment"
+                >
+
+                <button
+                    id="record-payment-button"
+                    type="button"
+                    class="record-payment-button"
+                >
+                    Record Payment
+                </button>
+            </section>
+
+            <section class="monthly-reset-card">
+                <div class="monthly-reset-head">
+                    <div>
+                        <p class="section-kicker">Monthly Management</p>
+                        <h3>🔄 Reset Monthly Progress</h3>
+                    </div>
+                </div>
+
+                <p class="monthly-reset-help">
+                    Use this at the beginning of a new month. XP, level progress,
+                    reward totals, withdrawals, performance count, and the latest
+                    report will return to zero. Previous logs will remain saved.
+                </p>
+
+                <button
+                    id="reset-month-button"
+                    type="button"
+                    class="reset-month-button"
+                >
+                    Reset XP for New Month
+                </button>
+            </section>
+
             <p id="message" aria-live="polite"></p>
         </section>
     </main>
 
-    <script type="module" src="./app.js?v=121"></script>
+    <script type="module" src="./app.js?v=160"></script>
 </body>
 </html>

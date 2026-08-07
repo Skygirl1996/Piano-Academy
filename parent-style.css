@@ -387,3 +387,147 @@ hr {
             #f59e0b
         );
 }
+
+
+/* ========================================
+   Monthly Reset
+======================================== */
+
+.monthly-reset-card {
+    margin-top: 30px;
+    padding: 22px;
+    border: 1px solid rgba(248, 113, 113, 0.38);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(220, 38, 38, 0.15),
+            rgba(127, 29, 29, 0.12)
+        );
+}
+
+.monthly-reset-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.monthly-reset-card h3 {
+    margin: 0;
+}
+
+.monthly-reset-help {
+    margin: 10px 0 16px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.reset-month-button {
+    width: 100%;
+    color: #ffffff;
+    border: 1px solid rgba(254, 202, 202, 0.32);
+    background:
+        linear-gradient(
+            135deg,
+            #dc2626,
+            #991b1b
+        );
+}
+
+.reset-month-button:hover {
+    box-shadow:
+        0 14px 28px rgba(220, 38, 38, 0.30);
+}
+
+/* ========================================
+   Child Payment Management
+======================================== */
+
+.payment-card {
+    margin-top: 30px;
+    padding: 22px;
+    border: 1px solid rgba(96, 165, 250, 0.35);
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(37, 99, 235, 0.16),
+            rgba(124, 58, 237, 0.12)
+        );
+}
+
+.payment-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.payment-card h3 {
+    margin: 0;
+}
+
+.payment-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 17px 0 20px;
+}
+
+.payment-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.payment-summary-item > span {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.76;
+}
+
+.payment-summary-item > strong {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+.payment-summary-withdrawn {
+    color: #fecaca;
+    border-color: rgba(248, 113, 113, 0.35);
+    background: rgba(220, 38, 38, 0.12);
+}
+
+.payment-summary-balance {
+    color: #bbf7d0;
+    border-color: rgba(74, 222, 128, 0.35);
+    background: rgba(22, 163, 74, 0.13);
+}
+
+.record-payment-button {
+    width: 100%;
+    margin-top: 4px;
+    color: #ffffff;
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #7c3aed
+        );
+}
+
+.record-payment-button:hover {
+    box-shadow:
+        0 14px 28px rgba(37, 99, 235, 0.28);
+}
+
+@media (max-width: 760px) {
+    .payment-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}

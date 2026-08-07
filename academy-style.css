@@ -731,3 +731,246 @@ label{
         line-height: 1.7;
     }
 }
+
+/* ========================================
+   Reward Wallet
+======================================== */
+
+.wallet-summary {
+    margin-top: 22px;
+    padding: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 22px;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(14, 165, 233, 0.15),
+            rgba(124, 58, 237, 0.13)
+        );
+}
+
+.wallet-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.wallet-title > span {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.wallet-title > small {
+    font-size: 13px;
+    font-weight: 700;
+    opacity: 0.72;
+}
+
+.wallet-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    padding: 15px 16px;
+    margin-top: 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+}
+
+.wallet-row > span {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.wallet-row > strong {
+    font-size: 22px;
+    text-align: right;
+}
+
+.wallet-earned-row > strong {
+    color: #fde68a;
+}
+
+.wallet-withdrawn-row {
+    border-color: rgba(248, 113, 113, 0.34);
+    background: rgba(220, 38, 38, 0.12);
+}
+
+.wallet-withdrawn-row,
+.wallet-withdrawn-row > strong {
+    color: #fecaca;
+}
+
+.wallet-balance-row {
+    border-color: rgba(74, 222, 128, 0.34);
+    background: rgba(22, 163, 74, 0.13);
+}
+
+.wallet-balance-row,
+.wallet-balance-row > strong {
+    color: #bbf7d0;
+}
+
+@media (max-width: 600px) {
+    .wallet-title,
+    .wallet-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .wallet-row > strong {
+        font-size: 20px;
+        text-align: left;
+    }
+}
+
+/* ========================================
+   Child Performance Start Button
+======================================== */
+
+.child-performance-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 11px;
+    margin-top: 24px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.child-listening-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-width: 280px;
+    min-height: 58px;
+    padding: 16px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 18px;
+    background:
+        linear-gradient(
+            135deg,
+            #22d3ee,
+            #3b82f6,
+            #8b5cf6
+        );
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    box-shadow:
+        0 14px 30px rgba(59, 130, 246, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease,
+        filter 0.2s ease;
+}
+
+.child-listening-button:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+        0 18px 38px rgba(59, 130, 246, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.32);
+}
+
+.child-listening-button:active:not(:disabled) {
+    transform: translateY(0) scale(0.99);
+}
+
+.child-listening-button-icon {
+    font-size: 25px;
+    line-height: 1;
+}
+
+.child-listening-button.is-ready {
+    animation: readyButtonPulse 2.2s ease-in-out infinite;
+}
+
+.child-listening-button.is-listening {
+    background:
+        linear-gradient(
+            135deg,
+            #10b981,
+            #22c55e
+        );
+    box-shadow:
+        0 14px 34px rgba(34, 197, 94, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    animation: listeningButtonGlow 1.4s ease-in-out infinite;
+}
+
+.child-listening-button.is-reviewing {
+    background:
+        linear-gradient(
+            135deg,
+            #f59e0b,
+            #f97316
+        );
+    box-shadow:
+        0 14px 34px rgba(245, 158, 11, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.24);
+}
+
+.child-listening-button:disabled {
+    cursor: default;
+    opacity: 1;
+    transform: none;
+}
+
+.child-listening-feedback {
+    min-height: 22px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 700;
+    text-align: center;
+    opacity: 0.82;
+}
+
+@keyframes readyButtonPulse {
+    0%,
+    100% {
+        box-shadow:
+            0 14px 30px rgba(59, 130, 246, 0.28),
+            0 0 0 0 rgba(34, 211, 238, 0.30);
+    }
+
+    50% {
+        box-shadow:
+            0 18px 38px rgba(59, 130, 246, 0.34),
+            0 0 0 11px rgba(34, 211, 238, 0);
+    }
+}
+
+@keyframes listeningButtonGlow {
+    0%,
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    50% {
+        transform: scale(1.025);
+        filter: brightness(1.08);
+    }
+}
+
+@media (max-width: 600px) {
+    .child-performance-action {
+        align-items: stretch;
+    }
+
+    .child-listening-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 56px;
+        padding: 15px 16px;
+        font-size: 17px;
+    }
+}
+

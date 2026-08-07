@@ -3,15 +3,15 @@ import { db } from "./firebase.js";
 import {
     collection,
     doc,
-    getDoc,
     onSnapshot,
+    runTransaction,
     serverTimestamp,
-    setDoc,
-    writeBatch
+    setDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const STUDENT_ID = "kiamaher";
 const XP_PER_LEVEL = 500;
+const TOMAN_PER_XP = 100;
 
 const studentRef = doc(
     db,
@@ -26,6 +26,12 @@ function getElement(id) {
 function getNumber(value) {
     const number = Number(value);
     return Number.isFinite(number) ? number : 0;
+}
+
+function formatNumber(value) {
+    return Math.round(
+        getNumber(value)
+    ).toLocaleString();
 }
 
 function setParentMessage(message, type = "success") {
@@ -61,7 +67,7 @@ function getSelectText(id) {
 function calculateLevelData(totalXP) {
     const safeXP = Math.max(
         0,
-        getNumber(totalXP)
+        Math.round(getNumber(totalXP))
     );
 
     const level = Math.floor(
@@ -79,6 +85,35 @@ function calculateLevelData(totalXP) {
         level,
         xpInCurrentLevel,
         progressPercent
+    };
+}
+
+function calculateWallet(student) {
+    const totalXP = Math.max(
+        0,
+        Math.round(getNumber(student?.xp))
+    );
+
+    const totalReward =
+        totalXP * TOMAN_PER_XP;
+
+    const totalWithdrawn = Math.max(
+        0,
+        Math.round(
+            getNumber(student?.totalWithdrawnMoney)
+        )
+    );
+
+    const availableBalance = Math.max(
+        0,
+        totalReward - totalWithdrawn
+    );
+
+    return {
+        totalXP,
+        totalReward,
+        totalWithdrawn,
+        availableBalance
     };
 }
 
@@ -180,6 +215,166 @@ function updateStatusAnimation(statusText) {
     );
 
     statusIcon.textContent = "♪";
+}
+
+function updateChildListeningControl(statusText) {
+    const button = getElement(
+        "child-listening-button"
+    );
+
+    const buttonText = getElement(
+        "child-listening-button-text"
+    );
+
+    const feedback = getElement(
+        "child-listening-feedback"
+    );
+
+    if (!button || !buttonText || !feedback) {
+        return;
+    }
+
+    const text = String(
+        statusText || ""
+    ).toLowerCase();
+
+    button.classList.remove(
+        "is-listening",
+        "is-reviewing",
+        "is-ready"
+    );
+
+    if (text.includes("listening")) {
+        button.disabled = true;
+        button.classList.add("is-listening");
+        buttonText.textContent =
+            "Listening Now...";
+        feedback.textContent =
+            "The academy is listening to your performance.";
+        return;
+    }
+
+    if (
+        text.includes("review") ||
+        text.includes("accuracy")
+    ) {
+        button.disabled = true;
+        button.classList.add("is-reviewing");
+        buttonText.textContent =
+            "Review in Progress";
+        feedback.textContent =
+            "Your performance is being reviewed.";
+        return;
+    }
+
+    button.disabled = false;
+    button.classList.add("is-ready");
+
+    if (
+        text.includes("complete") ||
+        text.includes("finished") ||
+        text.includes("approved") ||
+        text.includes("congratulations")
+    ) {
+        buttonText.textContent =
+            "Start a New Performance";
+        feedback.textContent =
+            "Press when you are ready to play again.";
+        return;
+    }
+
+    buttonText.textContent =
+        "I'm Ready to Play";
+    feedback.textContent =
+        "Press the button when you are ready to begin.";
+}
+
+async function startChildPerformance() {
+    const button = getElement(
+        "child-listening-button"
+    );
+
+    const buttonText = getElement(
+        "child-listening-button-text"
+    );
+
+    const feedback = getElement(
+        "child-listening-feedback"
+    );
+
+    if (!button) {
+        return;
+    }
+
+    try {
+        button.disabled = true;
+
+        if (buttonText) {
+            buttonText.textContent =
+                "Starting...";
+        }
+
+        if (feedback) {
+            feedback.textContent =
+                "Connecting to the academy...";
+        }
+
+        await setDoc(
+            studentRef,
+            {
+                musicStatus:
+                    "🎧 We are listening to your performance...",
+                performanceStartedAt:
+                    serverTimestamp(),
+                updatedAt:
+                    serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
+    } catch (error) {
+        console.error(
+            "Child performance start error:",
+            error
+        );
+
+        button.disabled = false;
+
+        if (buttonText) {
+            buttonText.textContent =
+                "I'm Ready to Play";
+        }
+
+        if (feedback) {
+            feedback.textContent =
+                `Could not start listening: ${error.message}`;
+        }
+
+        alert(
+            `Could not start listening:
+${error.message}`
+        );
+    }
+}
+
+function initializeChildControls() {
+    const childListeningButton = getElement(
+        "child-listening-button"
+    );
+
+    if (!childListeningButton) {
+        return;
+    }
+
+    childListeningButton.addEventListener(
+        "click",
+        startChildPerformance
+    );
+
+    console.log(
+        "Child listening control initialized."
+    );
 }
 
 function setReportRow(
@@ -328,12 +523,46 @@ function renderLatestReport(report) {
 
     if (totalXPBox) {
         totalXPBox.textContent =
-            finalXP.toLocaleString();
+            formatNumber(finalXP);
     }
 
     if (rewardBox) {
         rewardBox.textContent =
-            reward.toLocaleString();
+            formatNumber(reward);
+    }
+}
+
+function updateWalletDisplay(student) {
+    const wallet = calculateWallet(student);
+
+    const fields = {
+        "total-reward": wallet.totalReward,
+        "total-withdrawn": wallet.totalWithdrawn,
+        "available-balance": wallet.availableBalance,
+        "parent-total-reward": wallet.totalReward,
+        "parent-total-withdrawn": wallet.totalWithdrawn,
+        "parent-available-balance": wallet.availableBalance
+    };
+
+    Object.entries(fields).forEach(
+        function ([id, value]) {
+            const element = getElement(id);
+
+            if (element) {
+                element.textContent =
+                    formatNumber(value);
+            }
+        }
+    );
+
+    const paymentInput = getElement(
+        "payment-amount"
+    );
+
+    if (paymentInput) {
+        paymentInput.max = String(
+            wallet.availableBalance
+        );
     }
 }
 
@@ -351,9 +580,15 @@ function updateAcademyPage(student) {
     const levelBox = getElement("level");
     const progressBar = getElement("progress");
     const progressText = getElement("progress-text");
-    const teacherMessageCard = getElement("teacher-message-card");
-    const teacherMessageBox = getElement("teacher-message");
-    const teacherMessageInput = getElement("teacher-message-input");
+    const teacherMessageCard = getElement(
+        "teacher-message-card"
+    );
+    const teacherMessageBox = getElement(
+        "teacher-message"
+    );
+    const teacherMessageInput = getElement(
+        "teacher-message-input"
+    );
 
     const teacherMessage = String(
         student.teacherMessage || ""
@@ -380,7 +615,7 @@ function updateAcademyPage(student) {
 
     if (scoreBox) {
         scoreBox.textContent =
-            `${levelData.totalXP.toLocaleString()} XP`;
+            `${formatNumber(levelData.totalXP)} XP`;
     }
 
     if (levelBox) {
@@ -394,7 +629,11 @@ function updateAcademyPage(student) {
 
         progressBar.setAttribute(
             "aria-valuenow",
-            String(Math.round(levelData.progressPercent))
+            String(
+                Math.round(
+                    levelData.progressPercent
+                )
+            )
         );
     }
 
@@ -404,7 +643,9 @@ function updateAcademyPage(student) {
     }
 
     updateStatusAnimation(currentStatus);
+    updateChildListeningControl(currentStatus);
     renderLatestReport(student.latestReport);
+    updateWalletDisplay(student);
 }
 
 function startStudentListener() {
@@ -490,8 +731,13 @@ window.changeStatus = async function changeStatus(
 };
 
 async function saveTeacherMessage() {
-    const input = getElement("teacher-message-input");
-    const button = getElement("save-teacher-message-button");
+    const input = getElement(
+        "teacher-message-input"
+    );
+
+    const button = getElement(
+        "save-teacher-message-button"
+    );
 
     const message = String(
         input?.value || ""
@@ -500,7 +746,8 @@ async function saveTeacherMessage() {
     try {
         if (button) {
             button.disabled = true;
-            button.textContent = "Saving Message...";
+            button.textContent =
+                "Saving Message...";
         }
 
         setParentMessage(
@@ -524,8 +771,8 @@ async function saveTeacherMessage() {
 
         setParentMessage(
             message
-                ? "Teacher's message saved successfully."
-                : "Teacher's message cleared. No message will be shown today.",
+                ? "Teacher's message saved."
+                : "Teacher's message cleared.",
             "success"
         );
     } catch (error) {
@@ -540,8 +787,7 @@ async function saveTeacherMessage() {
         );
 
         alert(
-            `Message save failed:
-${error.message}`
+            `Message save failed:\n${error.message}`
         );
     } finally {
         if (button) {
@@ -637,7 +883,8 @@ function calculatePerformance() {
         )
     );
 
-    const reward = finalXP * 100;
+    const reward =
+        finalXP * TOMAN_PER_XP;
 
     return {
         performanceXP,
@@ -686,16 +933,16 @@ function calculateXP() {
 
     if (finalXPBox) {
         finalXPBox.textContent =
-            result.finalXP.toLocaleString();
+            formatNumber(result.finalXP);
     }
 
     if (rewardBox) {
         rewardBox.textContent =
-            result.reward.toLocaleString();
+            formatNumber(result.reward);
     }
 
     setParentMessage(
-        `Calculated: ${result.finalXP.toLocaleString()} XP`,
+        `Calculated: ${formatNumber(result.finalXP)} XP`,
         "success"
     );
 
@@ -728,100 +975,6 @@ async function savePerformance() {
             songInput?.value.trim() ||
             "Practice Session";
 
-        const studentSnapshot = await getDoc(
-            studentRef
-        );
-
-        if (!studentSnapshot.exists()) {
-            throw new Error(
-                "Student profile does not exist."
-            );
-        }
-
-        const student = studentSnapshot.data();
-
-        const currentXP = Math.max(
-            0,
-            getNumber(student.xp)
-        );
-
-        const currentMoney = Math.max(
-            0,
-            getNumber(student.moneyBalance)
-        );
-
-        const currentEarnedMoney = Math.max(
-            0,
-            getNumber(student.totalEarnedMoney)
-        );
-
-        const currentPerformances = Math.max(
-            0,
-            getNumber(student.totalPerformances)
-        );
-
-        const newTotalXP =
-            currentXP + result.finalXP;
-
-        const newLevelData = calculateLevelData(
-            newTotalXP
-        );
-
-        const report = {
-            studentId: STUDENT_ID,
-            song,
-
-            performanceXP:
-                result.performanceXP,
-            performanceLabel:
-                result.performanceLabel,
-
-            repetitionXP:
-                result.repetitionXP,
-            repetitionLabel:
-                result.repetitionLabel,
-
-            difficultyMultiplier:
-                result.difficultyMultiplier,
-            difficultyLabel:
-                result.difficultyLabel,
-
-            rhythmXP:
-                result.rhythmXP,
-            rhythmLabel:
-                result.rhythmLabel,
-
-            notesXP:
-                result.notesXP,
-            notesLabel:
-                result.notesLabel,
-
-            expressionXP:
-                result.expressionXP,
-            expressionLabel:
-                result.expressionLabel,
-
-            bonusXP:
-                result.bonusXP,
-            bonusLabels:
-                result.bonusLabels,
-
-            subtotal:
-                result.subtotal,
-            finalXP:
-                result.finalXP,
-            reward:
-                result.reward,
-
-            totalXPAfterSave:
-                newTotalXP,
-            levelAfterSave:
-                newLevelData.level,
-
-            savedAt:
-                Date.now()
-        };
-
         const logRef = doc(
             collection(
                 db,
@@ -829,50 +982,170 @@ async function savePerformance() {
             )
         );
 
-        const batch = writeBatch(db);
+        const savedResult = await runTransaction(
+            db,
+            async function (transaction) {
+                const studentSnapshot =
+                    await transaction.get(
+                        studentRef
+                    );
 
-        batch.set(
-            logRef,
-            {
-                ...report,
-                createdAt:
-                    serverTimestamp()
-            }
-        );
+                if (!studentSnapshot.exists()) {
+                    throw new Error(
+                        "Student profile does not exist."
+                    );
+                }
 
-        batch.set(
-            studentRef,
-            {
-                xp:
+                const student =
+                    studentSnapshot.data();
+
+                const currentXP = Math.max(
+                    0,
+                    Math.round(
+                        getNumber(student.xp)
+                    )
+                );
+
+                const currentWithdrawn = Math.max(
+                    0,
+                    Math.round(
+                        getNumber(
+                            student.totalWithdrawnMoney
+                        )
+                    )
+                );
+
+                const currentPerformances = Math.max(
+                    0,
+                    Math.round(
+                        getNumber(
+                            student.totalPerformances
+                        )
+                    )
+                );
+
+                const newTotalXP =
+                    currentXP + result.finalXP;
+
+                const newLevelData =
+                    calculateLevelData(
+                        newTotalXP
+                    );
+
+                const newTotalReward =
+                    newTotalXP * TOMAN_PER_XP;
+
+                const newBalance = Math.max(
+                    0,
+                    newTotalReward - currentWithdrawn
+                );
+
+                const report = {
+                    studentId: STUDENT_ID,
+                    song,
+
+                    performanceXP:
+                        result.performanceXP,
+                    performanceLabel:
+                        result.performanceLabel,
+
+                    repetitionXP:
+                        result.repetitionXP,
+                    repetitionLabel:
+                        result.repetitionLabel,
+
+                    difficultyMultiplier:
+                        result.difficultyMultiplier,
+                    difficultyLabel:
+                        result.difficultyLabel,
+
+                    rhythmXP:
+                        result.rhythmXP,
+                    rhythmLabel:
+                        result.rhythmLabel,
+
+                    notesXP:
+                        result.notesXP,
+                    notesLabel:
+                        result.notesLabel,
+
+                    expressionXP:
+                        result.expressionXP,
+                    expressionLabel:
+                        result.expressionLabel,
+
+                    bonusXP:
+                        result.bonusXP,
+                    bonusLabels:
+                        result.bonusLabels,
+
+                    subtotal:
+                        result.subtotal,
+                    finalXP:
+                        result.finalXP,
+                    reward:
+                        result.reward,
+
+                    totalXPAfterSave:
+                        newTotalXP,
+                    levelAfterSave:
+                        newLevelData.level,
+                    totalRewardAfterSave:
+                        newTotalReward,
+                    totalWithdrawnAfterSave:
+                        currentWithdrawn,
+                    balanceAfterSave:
+                        newBalance,
+                    savedAt:
+                        Date.now()
+                };
+
+                transaction.set(
+                    logRef,
+                    {
+                        ...report,
+                        createdAt:
+                            serverTimestamp()
+                    }
+                );
+
+                transaction.set(
+                    studentRef,
+                    {
+                        xp:
+                            newTotalXP,
+                        level:
+                            newLevelData.level,
+                        totalEarnedMoney:
+                            newTotalReward,
+                        totalWithdrawnMoney:
+                            currentWithdrawn,
+                        moneyBalance:
+                            newBalance,
+                        totalPerformances:
+                            currentPerformances + 1,
+                        latestReport:
+                            report,
+                        musicStatus:
+                            "🎉 Congratulations! Your performance has been approved.",
+                        updatedAt:
+                            serverTimestamp()
+                    },
+                    {
+                        merge: true
+                    }
+                );
+
+                return {
                     newTotalXP,
-
-                level:
-                    newLevelData.level,
-
-                moneyBalance:
-                    currentMoney + result.reward,
-
-                totalEarnedMoney:
-                    currentEarnedMoney + result.reward,
-
-                totalPerformances:
-                    currentPerformances + 1,
-
-                latestReport:
-                    report,
-
-                musicStatus:
-                    "🎉 Congratulations! Your performance has been approved.",
-
-                updatedAt:
-                    serverTimestamp()
-            },
-            {
-                merge: true
+                    newLevel:
+                        newLevelData.level,
+                    newTotalReward,
+                    currentWithdrawn,
+                    newBalance
+                };
             }
         );
-
-        await batch.commit();
 
         const finalXPBox = getElement(
             "final-xp"
@@ -884,24 +1157,25 @@ async function savePerformance() {
 
         if (finalXPBox) {
             finalXPBox.textContent =
-                result.finalXP.toLocaleString();
+                formatNumber(result.finalXP);
         }
 
         if (rewardBox) {
             rewardBox.textContent =
-                result.reward.toLocaleString();
+                formatNumber(result.reward);
         }
 
         setParentMessage(
-            `Saved successfully: +${result.finalXP.toLocaleString()} XP | Total: ${newTotalXP.toLocaleString()} XP | Level ${newLevelData.level}`,
+            `Saved: +${formatNumber(result.finalXP)} XP | Total reward: ${formatNumber(savedResult.newTotalReward)} تومان | Balance: ${formatNumber(savedResult.newBalance)} تومان`,
             "success"
         );
 
         alert(
-            `Performance saved successfully!\n\n` +
-            `Added XP: ${result.finalXP.toLocaleString()}\n` +
-            `Total XP: ${newTotalXP.toLocaleString()}\n` +
-            `Level: ${newLevelData.level}`
+            "Performance saved successfully!\n\n" +
+            `Added XP: ${formatNumber(result.finalXP)}\n` +
+            `Total XP: ${formatNumber(savedResult.newTotalXP)}\n` +
+            `Level: ${savedResult.newLevel}\n` +
+            `Available balance: ${formatNumber(savedResult.newBalance)} تومان`
         );
     } catch (error) {
         console.error(
@@ -922,6 +1196,426 @@ async function savePerformance() {
             saveButton.disabled = false;
             saveButton.textContent =
                 "Save Performance";
+        }
+    }
+}
+
+async function recordPayment() {
+    const paymentButton = getElement(
+        "record-payment-button"
+    );
+
+    const amountInput = getElement(
+        "payment-amount"
+    );
+
+    const noteInput = getElement(
+        "payment-note"
+    );
+
+    const amount = Math.round(
+        getNumber(amountInput?.value)
+    );
+
+    const note = String(
+        noteInput?.value || ""
+    ).trim();
+
+    if (amount <= 0) {
+        setParentMessage(
+            "Enter a payment amount greater than zero.",
+            "error"
+        );
+
+        alert(
+            "Please enter a valid payment amount."
+        );
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `Record a payment of ${formatNumber(amount)} تومان to the child?`
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        if (paymentButton) {
+            paymentButton.disabled = true;
+            paymentButton.textContent =
+                "Recording Payment...";
+        }
+
+        setParentMessage(
+            "Recording payment...",
+            "loading"
+        );
+
+        const paymentLogRef = doc(
+            collection(
+                db,
+                "paymentLogs"
+            )
+        );
+
+        const paymentResult = await runTransaction(
+            db,
+            async function (transaction) {
+                const studentSnapshot =
+                    await transaction.get(
+                        studentRef
+                    );
+
+                if (!studentSnapshot.exists()) {
+                    throw new Error(
+                        "Student profile does not exist."
+                    );
+                }
+
+                const student =
+                    studentSnapshot.data();
+
+                const wallet =
+                    calculateWallet(student);
+
+                if (amount > wallet.availableBalance) {
+                    throw new Error(
+                        `Payment is greater than the available balance of ${formatNumber(wallet.availableBalance)} تومان.`
+                    );
+                }
+
+                const newTotalWithdrawn =
+                    wallet.totalWithdrawn + amount;
+
+                const newBalance =
+                    wallet.totalReward - newTotalWithdrawn;
+
+                transaction.set(
+                    paymentLogRef,
+                    {
+                        studentId:
+                            STUDENT_ID,
+                        amount,
+                        note,
+                        totalRewardAtPayment:
+                            wallet.totalReward,
+                        balanceBefore:
+                            wallet.availableBalance,
+                        totalWithdrawnAfter:
+                            newTotalWithdrawn,
+                        balanceAfter:
+                            newBalance,
+                        createdAt:
+                            serverTimestamp()
+                    }
+                );
+
+                transaction.set(
+                    studentRef,
+                    {
+                        totalEarnedMoney:
+                            wallet.totalReward,
+                        totalWithdrawnMoney:
+                            newTotalWithdrawn,
+                        moneyBalance:
+                            newBalance,
+                        lastPaymentAmount:
+                            amount,
+                        lastPaymentNote:
+                            note,
+                        lastPaymentAt:
+                            serverTimestamp(),
+                        updatedAt:
+                            serverTimestamp()
+                    },
+                    {
+                        merge: true
+                    }
+                );
+
+                return {
+                    totalReward:
+                        wallet.totalReward,
+                    totalWithdrawn:
+                        newTotalWithdrawn,
+                    availableBalance:
+                        newBalance
+                };
+            }
+        );
+
+        if (amountInput) {
+            amountInput.value = "";
+        }
+
+        if (noteInput) {
+            noteInput.value = "";
+        }
+
+        setParentMessage(
+            `Payment recorded: ${formatNumber(amount)} تومان | Remaining balance: ${formatNumber(paymentResult.availableBalance)} تومان`,
+            "success"
+        );
+
+        alert(
+            "Payment recorded successfully!\n\n" +
+            `Paid: ${formatNumber(amount)} تومان\n` +
+            `Total withdrawn: ${formatNumber(paymentResult.totalWithdrawn)} تومان\n` +
+            `Remaining balance: ${formatNumber(paymentResult.availableBalance)} تومان`
+        );
+    } catch (error) {
+        console.error(
+            "Payment recording error:",
+            error
+        );
+
+        setParentMessage(
+            `Payment failed: ${error.message}`,
+            "error"
+        );
+
+        alert(
+            `Payment failed:\n${error.message}`
+        );
+    } finally {
+        if (paymentButton) {
+            paymentButton.disabled = false;
+            paymentButton.textContent =
+                "Record Payment";
+        }
+    }
+}
+
+function resetEvaluationForm() {
+    const fields = [
+        "song-name",
+        "payment-amount",
+        "payment-note"
+    ];
+
+    fields.forEach(
+        function (id) {
+            const element = getElement(id);
+
+            if (element) {
+                element.value = "";
+            }
+        }
+    );
+
+    const selects = [
+        "performance",
+        "repetition",
+        "rhythm",
+        "notes",
+        "expression"
+    ];
+
+    selects.forEach(
+        function (id) {
+            const element = getElement(id);
+
+            if (element) {
+                element.value = "0";
+            }
+        }
+    );
+
+    const difficulty = getElement("difficulty");
+
+    if (difficulty) {
+        difficulty.selectedIndex = 0;
+    }
+
+    document
+        .querySelectorAll(".bonus:checked")
+        .forEach(
+            function (checkbox) {
+                checkbox.checked = false;
+            }
+        );
+
+    const finalXPBox = getElement("final-xp");
+    const rewardBox = getElement("reward");
+
+    if (finalXPBox) {
+        finalXPBox.textContent = "0";
+    }
+
+    if (rewardBox) {
+        rewardBox.textContent = "0";
+    }
+}
+
+async function resetMonthlyProgress() {
+    const resetButton = getElement(
+        "reset-month-button"
+    );
+
+    const firstConfirmation = window.confirm(
+        "Reset this month's XP, rewards, withdrawals, and level progress?\n\n" +
+        "Previous performance and payment logs will remain saved."
+    );
+
+    if (!firstConfirmation) {
+        return;
+    }
+
+    const typedConfirmation = window.prompt(
+        "Type RESET to confirm the monthly reset."
+    );
+
+    if (typedConfirmation !== "RESET") {
+        setParentMessage(
+            "Monthly reset cancelled. Type RESET exactly to confirm.",
+            "error"
+        );
+        return;
+    }
+
+    try {
+        if (resetButton) {
+            resetButton.disabled = true;
+            resetButton.textContent =
+                "Resetting Monthly Progress...";
+        }
+
+        setParentMessage(
+            "Saving the monthly archive and resetting progress...",
+            "loading"
+        );
+
+        const archiveRef = doc(
+            collection(
+                db,
+                "monthlyArchives"
+            )
+        );
+
+        await runTransaction(
+            db,
+            async function (transaction) {
+                const studentSnapshot =
+                    await transaction.get(
+                        studentRef
+                    );
+
+                if (!studentSnapshot.exists()) {
+                    throw new Error(
+                        "Student profile does not exist."
+                    );
+                }
+
+                const student =
+                    studentSnapshot.data();
+
+                const levelData =
+                    calculateLevelData(
+                        student.xp
+                    );
+
+                const wallet =
+                    calculateWallet(student);
+
+                transaction.set(
+                    archiveRef,
+                    {
+                        studentId:
+                            STUDENT_ID,
+                        monthKey:
+                            new Date()
+                                .toISOString()
+                                .slice(0, 7),
+                        archivedXP:
+                            levelData.totalXP,
+                        archivedLevel:
+                            levelData.level,
+                        archivedTotalReward:
+                            wallet.totalReward,
+                        archivedTotalWithdrawn:
+                            wallet.totalWithdrawn,
+                        archivedMoneyBalance:
+                            wallet.availableBalance,
+                        archivedTotalPerformances:
+                            Math.max(
+                                0,
+                                Math.round(
+                                    getNumber(
+                                        student.totalPerformances
+                                    )
+                                )
+                            ),
+                        archivedLatestReport:
+                            student.latestReport || null,
+                        archivedStatus:
+                            student.musicStatus || "",
+                        archivedTeacherMessage:
+                            student.teacherMessage || "",
+                        createdAt:
+                            serverTimestamp()
+                    }
+                );
+
+                transaction.set(
+                    studentRef,
+                    {
+                        xp: 0,
+                        level: 1,
+                        totalEarnedMoney: 0,
+                        totalWithdrawnMoney: 0,
+                        moneyBalance: 0,
+                        totalPerformances: 0,
+                        latestReport: null,
+                        musicStatus:
+                            "🎹 New month started. Ready for your next performance!",
+                        monthlyResetAt:
+                            serverTimestamp(),
+                        updatedAt:
+                            serverTimestamp()
+                    },
+                    {
+                        merge: true
+                    }
+                );
+            }
+        );
+
+        resetEvaluationForm();
+
+        setParentMessage(
+            "Monthly progress reset successfully. XP, rewards, and withdrawals are now zero.",
+            "success"
+        );
+
+        alert(
+            "Monthly reset completed successfully!\n\n" +
+            "XP: 0\n" +
+            "Level: 1\n" +
+            "Total reward: 0\n" +
+            "Total withdrawn: 0\n" +
+            "Available balance: 0"
+        );
+    } catch (error) {
+        console.error(
+            "Monthly reset error:",
+            error
+        );
+
+        setParentMessage(
+            `Monthly reset failed: ${error.message}`,
+            "error"
+        );
+
+        alert(
+            `Monthly reset failed:\n${error.message}`
+        );
+    } finally {
+        if (resetButton) {
+            resetButton.disabled = false;
+            resetButton.textContent =
+                "Reset XP for New Month";
         }
     }
 }
@@ -969,6 +1663,14 @@ function initializeParentPanel() {
 
     const saveButton = getElement(
         "save-button"
+    );
+
+    const paymentButton = getElement(
+        "record-payment-button"
+    );
+
+    const resetMonthButton = getElement(
+        "reset-month-button"
     );
 
     if (loginButton) {
@@ -1079,6 +1781,20 @@ function initializeParentPanel() {
         );
     }
 
+    if (paymentButton) {
+        paymentButton.addEventListener(
+            "click",
+            recordPayment
+        );
+    }
+
+    if (resetMonthButton) {
+        resetMonthButton.addEventListener(
+            "click",
+            resetMonthlyProgress
+        );
+    }
+
     console.log(
         "Parent controls initialized:",
         {
@@ -1095,7 +1811,11 @@ function initializeParentPanel() {
             calculateButton:
                 Boolean(calculateButton),
             saveButton:
-                Boolean(saveButton)
+                Boolean(saveButton),
+            paymentButton:
+                Boolean(paymentButton),
+            resetMonthButton:
+                Boolean(resetMonthButton)
         }
     );
 }
@@ -1111,6 +1831,7 @@ function startApplication() {
 
     startStudentListener();
     initializeParentPanel();
+    initializeChildControls();
 
     console.log(
         "app.js loaded successfully."
